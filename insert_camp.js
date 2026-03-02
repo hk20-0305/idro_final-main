@@ -1,0 +1,1 @@
+db.camps.insert({ "_class" : "com.india.idro.model.Camp", "alertId" : "69a275ad4be5c87a5cec9b4a", "campName" : "Mumbai Central Relief", "location" : "Mumbai", "status" : "CRITICAL", "urgency" : "IMMEDIATE", "population" : 1200, "capacity" : 2000, "injuredCount" : 150, "medicinesNeeded" : true, "severity" : "CRITICAL", "infrastructureDamage" : true });
