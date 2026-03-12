@@ -20,7 +20,6 @@ public class VolunteerService {
 
     @PostConstruct
     public void initializeDemoVolunteers() {
-        // Check if demo volunteers already exist
         if (volunteerRepository.count() > 0) {
             System.out.println("✅ Volunteer demo accounts already initialized");
             return;
@@ -28,7 +27,6 @@ public class VolunteerService {
 
         System.out.println("🔧 Initializing 5 Volunteer demo accounts...");
 
-        // Create 5 pre-defined volunteer accounts
         List<Volunteer> demoVolunteers = Arrays.asList(
                 createDemoVolunteer("V001", "1234", "Raj Kumar", "+91-98765-43210", "raj.kumar@email.com", "Mumbai",
                         "First Aid, Rescue"),

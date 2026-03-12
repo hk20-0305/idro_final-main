@@ -24,7 +24,6 @@ public class GovernmentResourceSubmission {
         this.submissionTime = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }

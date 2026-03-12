@@ -66,7 +66,7 @@ public class DataSeeder implements CommandLineRunner {
             flood.setImpact("CRITICAL");
             flood.setDetails(
                     "Severe flooding reported affecting wildlife and local villages. Need immediate evacuation assistance.");
-            flood.setTime("08:30 AM"); // Should ideally be a timestamp but model uses String
+            flood.setTime("08:30 AM");
             flood.setMissionStatus("ACTIVE");
             flood.setTrustScore(95);
             flood.setReporterLevel("OFFICIAL");
@@ -133,10 +133,8 @@ public class DataSeeder implements CommandLineRunner {
             java.util.List<com.india.idro.model.Camp> camps = new java.util.ArrayList<>();
 
             for (Alert alert : alerts) {
-                // Determine camp names based on location
                 String baseName = alert.getLocation().split(",")[0];
 
-                // Camp 1
                 com.india.idro.model.Camp camp1 = new com.india.idro.model.Camp();
                 camp1.setName(baseName + " Relief Camp A");
                 camp1.setLocation(alert.getLocation());
@@ -147,7 +145,6 @@ public class DataSeeder implements CommandLineRunner {
                 camp1.setInjuredCount(0);
                 camp1.setUrgency("24 HOURS");
 
-                // Add varied stock for visualization
                 com.india.idro.model.Stock stock1 = new com.india.idro.model.Stock();
                 stock1.setFood("MODERATE");
                 stock1.setWater("LOW");
@@ -157,7 +154,6 @@ public class DataSeeder implements CommandLineRunner {
                 camp1.setAlertId(alert.getId());
                 camps.add(camp1);
 
-                // Camp 2 (only for high magnitude or random)
                 if (alert.getAffectedCount() > 1000) {
                     com.india.idro.model.Camp camp2 = new com.india.idro.model.Camp();
                     camp2.setName(baseName + " Shelter B");

@@ -15,7 +15,6 @@ import com.india.idro.repository.UserRepository;
 @Service
 public class AnalyticsService {
     
-
     @Autowired
     private AlertRepository alertRepository;
 
@@ -25,40 +24,31 @@ public class AnalyticsService {
     @Autowired
     private UserRepository userRepository;
 
-    // --- 1. Impact Analysis (UPDATED WITH AI LOGIC) ---
     public Map<String, Object> calculateImpact(Alert alert) {
         int people = alert.getAffectedCount();
         int injured = alert.getInjuredCount();
 
-        // Safety check to handle type conversion
         String type = (alert.getType() != null) ? alert.getType().toString() : "";
 
         Map<String, Object> impact = new HashMap<>();
 
-        // Existing Calculations
         impact.put("foodPerDay", people * 2);
         impact.put("waterPerDay", people * 3);
         impact.put("medicalTeams", (int) Math.ceil((double) injured / 40));
         impact.put("ambulances", (int) Math.ceil((double) injured / 25));
         impact.put("volunteers", (int) Math.ceil((double) people / 30));
 
-        // --- NEW SMART LOGIC ADDED HERE ---
-
-        // 1. Shelter Shortfall: Assume 40% of affected people have lost homes
         impact.put("shelterShortfall", (int) (people * 0.4));
 
-        // 2. Rescue Boats: Only required for Water Disasters (Flood/Cyclone)
-        // Logic: 1 Boat per 200 people
         if ("FLOOD".equalsIgnoreCase(type) || "CYCLONE".equalsIgnoreCase(type)) {
             impact.put("rescueBoats", (int) Math.ceil((double) people / 200));
         } else {
-            impact.put("rescueBoats", 0); // No boats needed for Fire/Earthquake
+            impact.put("rescueBoats", 0);
         }
 
         return impact;
     }
 
-    // --- 2. Dashboard Stats ---
     public Map<String, Object> getDashboardStats() {
         Map<String, Object> stats = new HashMap<>();
 
@@ -74,7 +64,6 @@ public class AnalyticsService {
         return stats;
     }
 
-    // --- 3. AI Prediction ---
     public Map<String, String> predictNextThreat() {
         Map<String, String> prediction = new HashMap<>();
 

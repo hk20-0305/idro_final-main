@@ -13,11 +13,6 @@ import com.india.idro.repository.IntelAlertRepository;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Fetches real-time earthquake data for India from the USGS Earthquake API.
- * Runs every 5 minutes and saves new events as IntelAlert with source = "USGS".
- * Does NOT touch any GDACS data or existing services.
- */
 @Service
 @RequiredArgsConstructor
 public class UsgsImportService {
@@ -27,19 +22,13 @@ public class UsgsImportService {
     private final IntelAlertRepository intelRepo;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    // India bounding box: lat 8–37, lon 68–97, magnitude >= 4, most recent 20
     private static final String USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson" +
             "&minmagnitude=4" +
             "&minlatitude=8&maxlatitude=37" +
             "&minlongitude=68&maxlongitude=97" +
             "&orderby=time&limit=20";
 
-    /**
-     * Fetches India earthquake data from USGS every 5 minutes.
-     * Deduplicates using externalId. Saves with source = "USGS".
-     * TO RE-ENABLE: uncomment the @Scheduled line below.
-     */
-    // @Scheduled(fixedRate = 300000) // DISABLED — uncomment to re-enable
+    @Scheduled(fixedRate = 30000)
     public void fetchIndiaEarthquakes() {
         log.info("[UsgsImportService] Fetching USGS earthquake data for India...");
 
@@ -83,7 +72,6 @@ public class UsgsImportService {
                 continue;
             }
 
-            // Use USGS event ID as externalId for deduplication
             String externalId = "USGS_" + feature.path("id").asText();
             if (externalId.equals("USGS_") || intelRepo.existsByExternalId(externalId)) {
                 skipped++;
@@ -96,14 +84,11 @@ public class UsgsImportService {
                 continue;
             }
 
-            // Map USGS alert level to severity label
             String alertLevel = props.path("alert").asText(null);
             String severity = mapUsgsAlert(alertLevel, props.path("mag").asDouble(0));
 
-            // Extract place name — USGS format: "44 km E of Bhadarwāh, India"
             String place = props.path("place").asText("");
 
-            // --- Filter: Only save events explicitly labelled as India by USGS ---
             if (!place.toLowerCase().endsWith(", india")) {
                 skipped++;
                 log.debug("[UsgsImportService] Skipping non-India event: {}", place);
@@ -112,11 +97,10 @@ public class UsgsImportService {
 
             IntelAlert alert = new IntelAlert();
             alert.setExternalId(externalId);
-            alert.setType("EQ"); // USGS only returns earthquakes
+            alert.setType("EQ");
             alert.setCountry("India");
             alert.setSeverity(severity);
             alert.setSource("USGS");
-            // GeoJSON order: [longitude, latitude, depth]
             alert.setLongitude(coords.get(0).asDouble());
             alert.setLatitude(coords.get(1).asDouble());
 
@@ -129,19 +113,15 @@ public class UsgsImportService {
         log.info("[UsgsImportService] Done. Saved: {}, Skipped: {}", saved, skipped);
     }
 
-    /**
-     * Maps USGS alert level + magnitude to a severity string matching GDACS style.
-     */
     private String mapUsgsAlert(String usgsAlert, double magnitude) {
         if ("red".equalsIgnoreCase(usgsAlert))
             return "Red";
         if ("orange".equalsIgnoreCase(usgsAlert))
             return "Orange";
         if ("yellow".equalsIgnoreCase(usgsAlert))
-            return "Orange"; // treat yellow as Orange
+            return "Orange";
         if ("green".equalsIgnoreCase(usgsAlert))
             return "Green";
-        // Fallback: use magnitude
         if (magnitude >= 6.0)
             return "Red";
         if (magnitude >= 5.0)

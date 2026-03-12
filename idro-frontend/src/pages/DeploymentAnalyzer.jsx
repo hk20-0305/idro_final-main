@@ -1,13 +1,13 @@
-import { Activity, MapPin, AlertTriangle, Truck, Clock, Package, ChevronDown, Utensils, Droplets, Bed, BriefcaseMedical, Heart, CheckCircle2, Compass } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { Activity, AlertTriangle, Bed, BriefcaseMedical, CheckCircle2, ChevronDown, Clock, Compass, Droplets, Heart, MapPin, Package, Truck, Utensils } from "lucide-react";
+import { useEffect, useState } from "react";
+import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
+import { useNavigate, useParams } from "react-router-dom";
+import DotPattern from "../components/DotPattern";
 import { idroApi } from "../services/api";
 import { calculateAllocations } from "../utils/allocationEngine";
-import DotPattern from "../components/DotPattern";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -49,23 +49,23 @@ if (typeof document !== "undefined" && !document.getElementById("pulse-anim")) {
 const campIcon = L.divIcon({
     className: "",
     html: `
-        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <div style="position:relative;overflow:visible;display:flex;flex-direction:column;align-items:center;gap:3px;">
           <div style="width:24px;height:24px;border-radius:50%;background:#ef4444;border:2.5px solid #ffffff;box-shadow:0 0 12px rgba(239,68,68,0.4);"></div>
-          <span style="background:white;color:#ef4444;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;border:1px solid #ef4444aa;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.15);">TARGET CAMP</span>
+          <span style="position:absolute;top:28px;left:50%;transform:translateX(-50%);background:white;color:#ef4444;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;border:1px solid #ef4444aa;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.15);">TARGET CAMP</span>
         </div>`,
-    iconSize: [80, 42],
-    iconAnchor: [40, 12],
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
 });
 
 const ngoLabelIcon = L.divIcon({
     className: "",
     html: `
-        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <div style="position:relative;overflow:visible;display:flex;flex-direction:column;align-items:center;gap:3px;">
           <div style="width:24px;height:24px;border-radius:50%;background:#22c55e;border:2.5px solid #ffffff;box-shadow:0 0 12px rgba(34,197,94,0.4);"></div>
-          <span style="background:white;color:#16a34a;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;border:1px solid #16a34aaa;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.15);">NGO BASE</span>
+          <span style="position:absolute;top:28px;left:50%;transform:translateX(-50%);background:white;color:#16a34a;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;border:1px solid #16a34aaa;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.15);">NGO BASE</span>
         </div>`,
-    iconSize: [80, 42],
-    iconAnchor: [40, 12],
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
 });
 
 const truckMarkerIcon = L.divIcon({
@@ -89,6 +89,38 @@ const CITY_MAP = {
     nagpur: [21.1458, 79.0882], indore: [22.7196, 75.8577],
     srinagar: [34.0837, 74.7973], varanasi: [25.3176, 82.9739],
     kota: [25.18, 75.83],
+};
+
+const STATE_COORDS = {
+    rajasthan: [26.9124, 75.7873],
+    maharashtra: [18.5204, 73.8567],
+    gujarat: [23.0225, 72.5714],
+    assam: [26.1445, 91.7362],
+    "uttar pradesh": [26.8467, 80.9462],
+};
+
+const haversineKm = ([lat1, lng1], [lat2, lng2]) => {
+    const R = 6371;
+    const toRad = (x) => x * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
+
+const isInsideIndia = (coords) => {
+    if (!coords) return false;
+    const [lat, lng] = coords;
+    return lat >= 6 && lat <= 37 && lng >= 68 && lng <= 97;
+};
+
+const stateCoords = (locStr = "") => {
+    const loc = locStr.toLowerCase();
+    for (const state in STATE_COORDS) {
+        if (loc.includes(state)) return STATE_COORDS[state];
+    }
+    return null;
 };
 
 const geocodeCache = new Map();
@@ -165,25 +197,34 @@ function TruckProgress({ progress }) {
     );
 }
 
-function FitBounds({ path }) {
+function FitBounds({ path, origin, destination }) {
     const map = useMap();
     useEffect(() => {
-        if (path && path.length > 0) {
-            const bounds = L.latLngBounds(path);
-            map.fitBounds(bounds, { padding: [30, 30], maxZoom: 12 });
+        const points = [];
+        if (path && path.length > 0) points.push(...path);
+        if (origin) points.push(origin);
+        if (destination) points.push(destination);
+        if (points.length > 0) {
+            const bounds = L.latLngBounds(points);
+            if (bounds.isValid()) {
+                map.fitBounds(bounds, { padding: [60, 60], maxZoom: 10 });
+            }
         }
-    }, [map, path]);
+    }, [map, path, origin, destination]);
     return null;
 }
 
 function AnimatedTruck({ path, status, startProgress, avgSpeed }) {
-    const [t, setT] = useState(status === "Delivered" ? 1 : status === "Preparing" ? 0 : startProgress / 100);
+    // Normalise status to handle both UPPER and mixed-case variants
+    const s = (status || "").toUpperCase();
+    const initT = s === "DELIVERED" ? 1 : (s === "PREPARING") ? 0 : startProgress / 100;
+    const [t, setT] = useState(initT);
 
     useEffect(() => {
-        if (status !== "En Route" || !path || path.length < 2) {
-            setT(status === "Delivered" ? 1 : 0);
-            return;
-        }
+        const s = (status || "").toUpperCase();
+        if (s === "DELIVERED") { setT(1); return; }
+        if (s !== "IN TRANSIT" && s !== "DISPATCHED") { setT(0); return; }
+        if (!path || path.length < 2) return;
 
         const step = Math.max(0.001, Math.min(0.005, (avgSpeed / 45) * 0.004));
         const id = setInterval(() => {
@@ -194,38 +235,44 @@ function AnimatedTruck({ path, status, startProgress, avgSpeed }) {
 
     if (!path || path.length < 2) return null;
 
-
+    const s2 = (status || "").toUpperCase();
     let lat, lng;
-    if (t <= 0) {
-        [lat, lng] = path[0];
-    } else if (t >= 1) {
+    if (s2 === "DELIVERED") {
         [lat, lng] = path[path.length - 1];
+    } else if (s2 === "PREPARING") {
+        [lat, lng] = path[0];
     } else {
-        const totalPoints = path.length;
-        const index = t * (totalPoints - 1);
-        const i = Math.floor(index);
-        const delta = index - i;
-        const p1 = path[i];
-        const p2 = path[i + 1] || p1;
-        lat = p1[0] + delta * (p2[0] - p1[0]);
-        lng = p1[1] + delta * (p2[1] - p1[1]);
+        if (t <= 0) {
+            [lat, lng] = path[0];
+        } else if (t >= 1) {
+            [lat, lng] = path[path.length - 1];
+        } else {
+            const index = t * (path.length - 1);
+            const i = Math.floor(index);
+            const delta = index - i;
+            const p1 = path[i];
+            const p2 = path[i + 1] || p1;
+            lat = p1[0] + delta * (p2[0] - p1[0]);
+            lng = p1[1] + delta * (p2[1] - p1[1]);
+        }
     }
 
     return <Marker position={[lat, lng]} icon={truckMarkerIcon} />;
 }
 
 function RouteMap({ originLatLng, destinationLatLng, status, progress, avgSpeed }) {
-    const [routePath, setRoutePath] = useState([originLatLng, destinationLatLng]);
+    const [routePath, setRoutePath] = useState(
+        originLatLng && destinationLatLng ? [originLatLng, destinationLatLng] : null
+    );
     const ORS_API_KEY = "5b3ce3597851110001cf62483842187f5466488390b1bf534e44e2cf";
 
     useEffect(() => {
+        if (!originLatLng || !destinationLatLng) return;
         const fetchORSPath = async () => {
             try {
-
                 const start = `${originLatLng[1]},${originLatLng[0]}`;
                 const end = `${destinationLatLng[1]},${destinationLatLng[0]}`;
                 const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${start}&end=${end}`;
-
                 const res = await axios.get(url);
                 if (res.data?.features?.[0]?.geometry?.coordinates) {
                     const coords = res.data.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
@@ -239,40 +286,53 @@ function RouteMap({ originLatLng, destinationLatLng, status, progress, avgSpeed 
         fetchORSPath();
     }, [originLatLng, destinationLatLng]);
 
-    const center = [(originLatLng[0] + destinationLatLng[0]) / 2, (originLatLng[1] + destinationLatLng[1]) / 2];
+    if (!originLatLng || !destinationLatLng) return null;
+
+    const center = [
+        (originLatLng[0] + destinationLatLng[0]) / 2,
+        (originLatLng[1] + destinationLatLng[1]) / 2,
+    ];
 
     return (
         <div className="w-full h-full rounded-xl overflow-hidden relative z-0 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-slate-700/20" style={{ minHeight: "360px" }}>
-            <MapContainer center={center} zoom={7} className="w-full h-full" style={{ minHeight: "380px" }} zoomControl scrollWheelZoom={false}>
+            <MapContainer center={center} zoom={6} className="w-full h-full" style={{ minHeight: "380px" }} zoomControl scrollWheelZoom={false}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
-                <FitBounds path={routePath} />
+                <FitBounds path={routePath || []} origin={originLatLng} destination={destinationLatLng} />
 
-                {(status === "IN TRANSIT" || status === "DISPATCHED") ? (
-                    <>
-                        <Polyline positions={routePath} color="#16a34a" weight={12} opacity={0.15} />
-                        <Polyline positions={routePath} color="#16a34a" weight={6} opacity={0.3} />
-                        <Polyline positions={routePath} color="#16a34a" weight={4} opacity={1} />
-                    </>
-                ) : status === "PREPARING" ? (
-                    <Polyline positions={routePath} color="#eab308" weight={3} dashArray="1, 10" lineCap="round" opacity={0.9} />
-                ) : status === "DELIVERED" ? (
-                    <Polyline positions={routePath} color="#22c55e" weight={4} opacity={0.9} />
-                ) : (
-                    <Polyline positions={routePath} color="#22c55e" weight={3} dashArray="6, 8" opacity={0.7} />
+                {routePath && (
+                    (status === "IN TRANSIT" || status === "DISPATCHED") ? (
+                        <>
+                            <Polyline positions={routePath} color="#16a34a" weight={12} opacity={0.15} />
+                            <Polyline positions={routePath} color="#16a34a" weight={6} opacity={0.3} />
+                            <Polyline positions={routePath} color="#16a34a" weight={4} opacity={1} />
+                        </>
+                    ) : status === "PREPARING" ? (
+                        <Polyline positions={routePath} color="#eab308" weight={3} dashArray="1, 10" lineCap="round" opacity={0.9} />
+                    ) : status === "DELIVERED" ? (
+                        <Polyline positions={routePath} color="#22c55e" weight={4} opacity={0.9} />
+                    ) : (
+                        <Polyline positions={routePath} color="#22c55e" weight={3} dashArray="6, 8" opacity={0.7} />
+                    )
                 )}
 
-                <Marker position={originLatLng} icon={ngoLabelIcon}><Popup>NGO Base</Popup></Marker>
-                <Marker position={destinationLatLng} icon={campIcon}><Popup>Target Camp</Popup></Marker>
+                <Marker position={originLatLng} icon={ngoLabelIcon}>
+                    <Popup>NGO Base</Popup>
+                </Marker>
+                <Marker position={destinationLatLng} icon={campIcon}>
+                    <Popup>Target Camp</Popup>
+                </Marker>
 
-                <AnimatedTruck
-                    path={routePath}
-                    status={status}
-                    startProgress={progress}
-                    avgSpeed={avgSpeed}
-                />
+                {routePath && (
+                    <AnimatedTruck
+                        path={routePath}
+                        status={status}
+                        startProgress={progress}
+                        avgSpeed={avgSpeed}
+                    />
+                )}
             </MapContainer>
         </div>
     );
@@ -385,21 +445,44 @@ const DeploymentAnalyzer = () => {
                         statusLabel = "PREPARING";
                     }
 
-                    let originLatLng = coordsFromLocation(alloc.providerLocation);
+                    // --- ORIGIN: NGO base — state-first lookup keeps it deterministic ---
+                    // Priority: 1) named STATE_COORDS  2) city name lookup  3) geocode  4) seedCoords
+                    let originLatLng =
+                        stateCoords(alloc.providerLocation || "") ||
+                        coordsFromLocation(alloc.providerLocation);
                     if (!originLatLng) originLatLng = await fetchCoordinates(alloc.providerLocation);
 
-                    let destinationLatLng = alloc.campCoords || coordsFromLocation(alloc.campName);
-                    if (!destinationLatLng) destinationLatLng = await fetchCoordinates(alloc.campName);
-
-                    if (!destinationLatLng && found && found.location) {
-                        destinationLatLng = coordsFromLocation(found.location) || await fetchCoordinates(found.location);
+                    // --- DESTINATION: disaster camp — never use same stateCoords as origin ---
+                    // Priority: 1) validated campCoords  2) city lookup  3) geocode  4) disaster location
+                    //           5) stateCoords from camp/disaster text ONLY if differs from origin
+                    let destinationLatLng = null;
+                    if (alloc.campCoords && isInsideIndia(alloc.campCoords)) {
+                        destinationLatLng = alloc.campCoords;
+                    }
+                    if (!destinationLatLng) destinationLatLng = coordsFromLocation(alloc.campName);
+                    if (!destinationLatLng) {
+                        const geocoded = await fetchCoordinates(alloc.campName);
+                        if (isInsideIndia(geocoded)) destinationLatLng = geocoded;
+                    }
+                    if (!destinationLatLng && found?.location) {
+                        const fromDisaster = coordsFromLocation(found.location) || await fetchCoordinates(found.location);
+                        if (isInsideIndia(fromDisaster)) destinationLatLng = fromDisaster;
+                    }
+                    // Last-resort: state fallback from camp/disaster text, only if it differs from origin
+                    if (!destinationLatLng) {
+                        const campStr = (alloc.campName || "") + " " + (found?.location || "");
+                        const fallback = stateCoords(campStr);
+                        const isSameAsOrigin = fallback && originLatLng &&
+                            fallback[0] === originLatLng[0] && fallback[1] === originLatLng[1];
+                        if (fallback && !isSameAsOrigin) destinationLatLng = fallback;
                     }
 
                     const seed = (alloc.id || String(idx)) + (id || "");
-
-
                     originLatLng = originLatLng || seedCoords(seed + "origin", 0);
                     destinationLatLng = destinationLatLng || seedCoords(seed + "dest", 1);
+
+                    const distKm = Math.round(haversineKm(originLatLng, destinationLatLng));
+                    const etaHours = (distKm / 45).toFixed(1);
 
                     return {
                         ...alloc,
@@ -407,8 +490,9 @@ const DeploymentAnalyzer = () => {
                         rawStatus: currentStatus,
                         progress,
                         color,
-                        avgSpeed: meta.speed,
-                        distRemainingKm: Math.round((1 - progress / 100) * meta.totalKm),
+                        avgSpeed: 45,
+                        distRemainingKm: distKm,
+                        etaHours,
                         originLatLng,
                         destinationLatLng,
                     };
@@ -683,7 +767,7 @@ const DeploymentAnalyzer = () => {
 
                                                             <div className="flex items-end gap-2 mb-6 relative z-10">
                                                                 <span className="text-5xl font-black tracking-tight" style={{ color: "#d9f99d" }}>
-                                                                    {dep.status === "Delivered" ? "0" : dep.distRemainingKm}
+                                                                    {dep.status === "DELIVERED" ? "0" : dep.distRemainingKm}
                                                                 </span>
                                                                 <span className="text-slate-400 text-2xl font-bold mb-1.5 lowercase">km</span>
                                                             </div>
@@ -709,7 +793,7 @@ const DeploymentAnalyzer = () => {
 
                                                             <div className="mb-6 relative z-10">
                                                                 <span className="text-5xl font-black tracking-tight" style={{ color: "#d9f99d" }}>
-                                                                    {dep.status === "Delivered" ? "Arrived" : (dep.urgency && dep.urgency.includes("Hours")) ? `${parseInt(dep.urgency)}h 00m` : (dep.urgency || "1h 42m")}
+                                                                    {dep.status === "DELIVERED" ? "Arrived" : `${dep.etaHours}h`}
                                                                 </span>
                                                             </div>
 

@@ -34,8 +34,6 @@ public class GovernmentAgencyController {
         String agencyId = loginRequest.get("agencyId");
         String password = loginRequest.get("password");
 
-        System.out.println("🔐 Government Agency Login Attempt: " + agencyId);
-
         GovernmentAgency agency = agencyService.getAgencyByAgencyId(agencyId);
 
         if (agency != null && password != null && password.equals(agency.getPassword())) {
@@ -66,8 +64,6 @@ public class GovernmentAgencyController {
             @PathVariable String agencyId,
             @RequestBody Map<String, String> request) {
 
-        System.out.println("🟢 Updating availability for Agency: " + agencyId);
-
         AvailabilityStatus status = request.get("availabilityStatus") != null
                 ? AvailabilityStatus.valueOf(request.get("availabilityStatus"))
                 : null;
@@ -95,8 +91,6 @@ public class GovernmentAgencyController {
             @PathVariable String agencyId,
             @RequestBody Map<String, List<ResourceItem>> resources) {
 
-        System.out.println("📦 Updating resources for Agency: " + agencyId);
-
         GovernmentAgency updatedAgency = agencyService.updateResources(agencyId, resources);
 
         if (updatedAgency != null) {
@@ -109,15 +103,12 @@ public class GovernmentAgencyController {
     @GetMapping("/all")
     public ResponseEntity<List<GovernmentAgency>> getAllAgencies(
             @org.springframework.web.bind.annotation.RequestParam(required = false) String disasterId) {
-        System.out.println(
-                "📋 Fetching Government Agencies for context: " + (disasterId != null ? disasterId : "GLOBAL"));
         List<GovernmentAgency> agencies = agencyService.getAllAgencies(disasterId);
         return ResponseEntity.ok(agencies);
     }
 
     @GetMapping("/init")
     public ResponseEntity<String> initialize() {
-        System.out.println("🛠️ Manual Government Agency Initialization Triggered");
         agencyService.initializeDemoAgencies();
         return ResponseEntity
                 .ok("Government Agency Demo accounts initialization triggered. Check console for details.");

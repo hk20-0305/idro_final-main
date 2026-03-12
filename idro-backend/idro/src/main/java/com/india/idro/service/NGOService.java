@@ -40,9 +40,7 @@ public class NGOService implements CommandLineRunner {
         public void initializeDemoAccounts() {
                 System.out.println("🔧 Initializing/Updating 25 NGO demo accounts...");
 
-                // Create/Update 25 pre-defined NGO accounts
                 List<NGO> demoNGOs = Arrays.asList(
-                                // MAHARASHTRA (5)
                                 updateOrCreateNGO("NGO001", "123", "Red Cross India", "Mumbai", "Maharashtra",
                                                 "+91-22-2307-7000",
                                                 "REG-RC-2001", "Western India",
@@ -65,7 +63,6 @@ public class NGOService implements CommandLineRunner {
                                                 Arrays.asList("Flood", "Cyclone", "Material Relief",
                                                                 "Clothing Distribution")),
 
-                                // RAJASTHAN (5)
                                 updateOrCreateNGO("NGO006", "123", "Rajasthan Seva Trust", "Jaipur", "Rajasthan",
                                                 "+91-141-235-0001",
                                                 "REG-RJ-001", "Western India",
@@ -85,7 +82,6 @@ public class NGOService implements CommandLineRunner {
                                                 "REG-RJ-005", "Western India",
                                                 Arrays.asList("Social Welfare", "Drought")),
 
-                                // ASSAM (5)
                                 updateOrCreateNGO("NGO011", "123", "Assam Flood Relief Mission", "Guwahati", "Assam",
                                                 "+91-361-245-0011", "REG-AS-011", "North East",
                                                 Arrays.asList("Flood", "Landslide", "Boat Rescue")),
@@ -102,7 +98,6 @@ public class NGOService implements CommandLineRunner {
                                                 "+91-376-233-0015", "REG-AS-015", "North East",
                                                 Arrays.asList("Rural Relief", "Flood")),
 
-                                // GUJARAT (5)
                                 updateOrCreateNGO("NGO016", "123", "Gujarat Disaster Care", "Ahmedabad", "Gujarat",
                                                 "+91-79-265-0016",
                                                 "REG-GJ-016", "Western India",
@@ -122,7 +117,6 @@ public class NGOService implements CommandLineRunner {
                                                 "+91-278-251-0020", "REG-GJ-020", "Western India",
                                                 Arrays.asList("Coastal Erosion", "Cyclone")),
 
-                                // UTTAR PRADESH (5)
                                 updateOrCreateNGO("NGO021", "123", "Lucknow Relief Foundation", "Lucknow",
                                                 "Uttar Pradesh",
                                                 "+91-522-223-0021", "REG-UP-021", "Northern India",
@@ -163,7 +157,6 @@ public class NGOService implements CommandLineRunner {
                 ngo.setOperatingRegion(operatingRegion);
                 ngo.setSupportedDisasterTypes(supportedDisasterTypes);
 
-                // Only initialize default resources for new NGOs
                 if (ngo.getId() == null) {
                         Map<String, ResourceItem> reliefSupplies = new HashMap<>();
                         reliefSupplies.put("foodPackets", new ResourceItem(false, 0));
@@ -213,7 +206,6 @@ public class NGOService implements CommandLineRunner {
                 ngo.setOperatingRegion(operatingRegion);
                 ngo.setSupportedDisasterTypes(supportedDisasterTypes);
 
-                // Initialize default resources
                 Map<String, ResourceItem> reliefSupplies = new HashMap<>();
                 reliefSupplies.put("foodPackets", new ResourceItem(false, 0));
                 reliefSupplies.put("drinkingWater", new ResourceItem(false, 0));
@@ -239,7 +231,6 @@ public class NGOService implements CommandLineRunner {
                 humanResources.put("rescueWorkers", new ResourceItem(false, 0));
                 ngo.setHumanResources(humanResources);
 
-                // Set default availability
                 ngo.setAvailabilityStatus(AvailabilityStatus.AVAILABLE);
                 ngo.setResponseTime(ResponseTime.IMMEDIATE);
                 ngo.setCoverageRadius(CoverageRadius.DISTRICT_WIDE);
@@ -251,17 +242,16 @@ public class NGOService implements CommandLineRunner {
                 Optional<NGO> ngoOpt = ngoRepository.findByNgoId(ngoId);
 
                 if (ngoOpt.isEmpty()) {
-                        return null; // NGO not found
+                        return null;
                 }
 
                 NGO ngo = ngoOpt.get();
 
-                // Check password
                 if (!ngo.getPassword().equals(password)) {
-                        return null; // Wrong password
+                        return null;
                 }
 
-                return ngo; // Success
+                return ngo;
         }
 
         public NGO getNGOProfile(String ngoId) {
@@ -281,7 +271,6 @@ public class NGOService implements CommandLineRunner {
 
                 NGO ngo = ngoOpt.get();
 
-                // Save a snapshot of the submission to the new collection
                 NGOResourceSubmission submission = new NGOResourceSubmission();
                 submission.setNgoId(ngoId);
                 submission.setNgoName(ngo.getNgoName());
@@ -293,7 +282,6 @@ public class NGOService implements CommandLineRunner {
                 submission.setAdditionalNotes(additionalNotes != null ? additionalNotes : ngo.getAdditionalNotes());
                 submissionRepository.save(submission);
 
-                // Update main NGO profile
                 if (reliefSupplies != null)
                         ngo.setReliefSupplies(reliefSupplies);
                 if (medicalSupport != null)
@@ -320,7 +308,6 @@ public class NGOService implements CommandLineRunner {
 
                 NGO ngo = ngoOpt.get();
 
-                // Update availability
                 if (availabilityStatus != null)
                         ngo.setAvailabilityStatus(availabilityStatus);
                 if (responseTime != null)
@@ -342,7 +329,6 @@ public class NGOService implements CommandLineRunner {
                         return new java.util.ArrayList<>();
                 }
 
-                // 1. Fetch disaster context
                 com.india.idro.model.Alert alert = alertRepository.findById(disasterId).orElse(null);
                 if (alert == null || alert.getLocation() == null || alert.getLocation().trim().isEmpty()) {
                         System.out.println("⚠️ Disaster or location context missing. Returning empty list.");
@@ -352,7 +338,6 @@ public class NGOService implements CommandLineRunner {
                 String location = alert.getLocation();
                 System.out.println("🔍 Analyzing Location for State: [" + location + "]");
 
-                // 2. Identify State by Keyword Matching
                 String detectedState = null;
                 for (String state : VALID_INDIAN_STATES) {
                         if (location.toLowerCase().contains(state.toLowerCase())) {
@@ -369,11 +354,9 @@ public class NGOService implements CommandLineRunner {
 
                 System.out.println("📍 Detected State: [" + detectedState + "]");
 
-                // 3. Fetch NGOs strictly by matching state
                 List<NGO> allNgosInState = ngoRepository.findByStateIgnoreCase(detectedState);
                 System.out.println("🏢 Found " + allNgosInState.size() + " NGOs matching: " + detectedState);
 
-                // 4. Extract ngoIds (as requested for tiered isolation)
                 List<String> filteredNgoIds = allNgosInState.stream()
                                 .map(NGO::getNgoId)
                                 .collect(java.util.stream.Collectors.toList());
@@ -382,7 +365,6 @@ public class NGOService implements CommandLineRunner {
                         return new java.util.ArrayList<>();
                 }
 
-                // 5. Final Isolation Fetch
                 return ngoRepository.findByNgoIdIn(filteredNgoIds);
         }
 }

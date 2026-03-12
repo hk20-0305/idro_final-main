@@ -19,31 +19,27 @@ public class GovernmentAgency {
     @Id
     private String id;
 
-    private String agencyId; // Unique agency identifier (e.g., "NDRF-MH-001")
-    private String agencyName; // Name of the agency
-    private AgencyType agencyType; // Type of government agency
-    private String location; // City/District location
-    private String contactNumber; // Emergency contact number
-    private String password; // Password for login
-    private String operatingRegion; // Region of operation (e.g., "Maharashtra", "Western India")
-    private List<String> supportedDisasterTypes; // Types of disasters they handle
+    private String agencyId;
+    private String agencyName;
+    private AgencyType agencyType;
+    private String location;
+    private String contactNumber;
+    private String password;
+    private String operatingRegion;
+    private List<String> supportedDisasterTypes;
 
-    // Resources organized by category
     private Map<String, List<ResourceItem>> resources;
 
-    // Availability and Response Information
     private AvailabilityStatus availabilityStatus;
     private ResponseTime responseTime;
     private CoverageRadius coverageRadius;
     private LocalDateTime lastUpdated;
 
-    // Constructors
     public GovernmentAgency() {
         this.resources = new HashMap<>();
         this.lastUpdated = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }

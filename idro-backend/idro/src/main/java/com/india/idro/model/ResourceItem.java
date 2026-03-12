@@ -21,7 +21,6 @@ public class ResourceItem {
         this.quantity = quantity;
     }
 
-    // Getters and Setters
     public String getName() {
         return name;
     }

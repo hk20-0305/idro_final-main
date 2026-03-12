@@ -20,15 +20,13 @@ public class ActionController {
     private ActionRepository actionRepository;
 
     @Autowired
-    private AlertRepository alertRepository; // ✅ FIXED: Now properly injected
+    private AlertRepository alertRepository;
 
-    // GET all actions
     @GetMapping
     public List<Action> getAllActions() {
         return actionRepository.findAll();
     }
 
-    // POST create action linked to an alert
     @PostMapping("/{alertId}")
     public ResponseEntity<Action> createAction(
             @PathVariable String alertId,
@@ -38,7 +36,6 @@ public class ActionController {
                     action.setAlertId(alertId);
                     action.setTimestamp(LocalDateTime.now());
 
-                    // Optional safety defaults
                     if (action.getStatus() == null) {
                         action.setStatus("PENDING");
                     }

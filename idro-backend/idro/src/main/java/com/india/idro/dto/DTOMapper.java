@@ -8,14 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class DTOMapper {
 
-    // Database (Enum) -> Frontend (String)
     public AlertDTO toAlertDTO(Alert alert) {
         if (alert == null) return null;
 
         AlertDTO dto = new AlertDTO();
         dto.setId(alert.getId());
 
-        // Convert Enum to String safely
         if (alert.getType() != null) {
             dto.setType(alert.getType().name());
         }
@@ -38,20 +36,18 @@ public class DTOMapper {
         return dto;
     }
 
-    // Frontend (String) -> Database (Enum)
     public Alert toAlertEntity(AlertDTO dto) {
         if (dto == null) return null;
 
         Alert alert = new Alert();
         alert.setId(dto.getId());
 
-        // Convert String to Enum safely
         try {
             if (dto.getType() != null) {
                 alert.setType(AlertType.valueOf(dto.getType().toUpperCase()));
             }
         } catch (IllegalArgumentException e) {
-            alert.setType(AlertType.FLOOD); // Default fallback
+            alert.setType(AlertType.FLOOD);
         }
 
         try {
@@ -59,7 +55,7 @@ public class DTOMapper {
                 alert.setColor(AlertColor.valueOf(dto.getColor().toUpperCase()));
             }
         } catch (IllegalArgumentException e) {
-            alert.setColor(AlertColor.RED); // Default fallback
+            alert.setColor(AlertColor.RED);
         }
 
         alert.setLocation(dto.getLocation());

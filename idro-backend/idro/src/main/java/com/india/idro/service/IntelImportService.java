@@ -28,15 +28,10 @@ public class IntelImportService {
 
     private static final String GDACS_URL = "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?pagesize=50&pagenumber=1";
 
-    /**
-     * Fetches disaster events from GDACS every 15 minutes.
-     * Only India events are persisted; duplicates are skipped using externalId.
-     */
-    @Scheduled(cron = "0 */10 * * * *") // fixedRate = 30000
+    @Scheduled(cron = "0 */10 * * * *")
     public void fetchIndiaDisasters() {
         log.info("[IntelImportService] Fetching GDACS disaster data...");
 
-        // Step 1: Fetch raw response as String for safe debug logging
         String rawResponse;
         try {
             rawResponse = restTemplate.getForObject(GDACS_URL, String.class);
@@ -51,7 +46,6 @@ public class IntelImportService {
             return;
         }
 
-        // Step 2: Deserialise raw JSON into GdacsResponse
         ObjectMapper mapper = new ObjectMapper();
         GdacsResponse response;
         try {
@@ -75,7 +69,6 @@ public class IntelImportService {
 
         for (GdacsEvent event : response.getFeatures()) {
 
-            // --- Guard: skip events with missing properties or geometry ---
             if (event.getProperties() == null || event.getGeometry() == null) {
                 skipped++;
                 continue;
@@ -83,7 +76,6 @@ public class IntelImportService {
 
             String country = event.getProperties().getCountry();
 
-            // --- Filter to India only ---
             if (country == null ||
                     !(country.equalsIgnoreCase("India") || country.equalsIgnoreCase("IN")
                             || country.equalsIgnoreCase("IND"))) {
@@ -91,14 +83,12 @@ public class IntelImportService {
                 continue;
             }
 
-            // --- Deduplicate by externalId ---
             String externalId = event.getProperties().getEventid();
             if (externalId == null || intelRepo.existsByExternalId(externalId)) {
                 skipped++;
                 continue;
             }
 
-            // --- Guard: coordinates must have at least 2 elements ---
             List<Double> coords = event.getGeometry().getCoordinates();
             if (coords == null || coords.size() < 2) {
                 skipped++;
@@ -108,9 +98,8 @@ public class IntelImportService {
             IntelAlert alert = new IntelAlert();
             alert.setExternalId(externalId);
             alert.setType(event.getProperties().getEventtype());
-            alert.setCountry("India"); // Normalize to India for consistency with controller queries
+            alert.setCountry("India");
             alert.setSeverity(event.getProperties().getAlertlevel());
-            // GeoJSON order: [longitude, latitude]
             alert.setLongitude(coords.get(0));
             alert.setLatitude(coords.get(1));
 

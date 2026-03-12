@@ -18,10 +18,10 @@ public class CoordinationMessage {
     @Id
     private String id;
 
-    private String user;             // e.g., "Gov Command", "NGO HelpIndia"
-    private String message;          // The actual message content
-    private String type;             // "normal" or "warning"
-    private String time;             // e.g., "10:00 AM"
+    private String user;
+    private String message;
+    private String type;
+    private String time;
 
     @CreatedDate
     private LocalDateTime createdAt;

@@ -6,8 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.india.idro.model.IntelAlert;
 
-public interface IntelAlertRepository
-        extends MongoRepository<IntelAlert, String> {
+public interface IntelAlertRepository extends MongoRepository<IntelAlert, String> {
 
     List<IntelAlert> findByCountryOrderByCreatedAtDesc(String country);
 
@@ -15,7 +14,7 @@ public interface IntelAlertRepository
 
     List<IntelAlert> findByCountryAndSourceIsNullOrderByCreatedAtDesc(String country);
 
-    List<IntelAlert> findBySourceOrderByCreatedAtDesc(String source); // USGS-only
+    List<IntelAlert> findBySourceOrderByCreatedAtDesc(String source);
 
     boolean existsByExternalId(String externalId);
 }

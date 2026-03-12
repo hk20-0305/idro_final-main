@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/analytics")
-@CrossOrigin(origins = "*") // ✅ ALLOW ALL PORTS (Fixes "Loading..." if port changes)
+@CrossOrigin(origins = "*")
 public class AnalyticsController {
 
     @Autowired
@@ -22,7 +22,6 @@ public class AnalyticsController {
 
     @GetMapping("/impact/{id}")
     public ResponseEntity<Map<String, Object>> getImpact(@PathVariable String id) {
-        // ✅ SAFER LOGIC: Returns 404 if ID is wrong, instead of crashing with RuntimeException
         return alertRepository.findById(id)
                 .map(alert -> ResponseEntity.ok(analyticsService.calculateImpact(alert)))
                 .orElse(ResponseEntity.notFound().build());

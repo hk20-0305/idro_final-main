@@ -8,32 +8,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO for receiving predictions from the Python ML Server.
- * Maps the JSON response from /predict endpoint.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AiPredictionResponseDTO {
 
-    // --- Core Metadata ---
-
     @JsonProperty("risk_score")
     private Double riskScore;
 
     @JsonProperty("prediction_source")
-    private String predictionSource; // "ML" or "Fallback"
+    private String predictionSource;
 
     @JsonProperty("explanation")
     private List<String> explanations;
 
-    // --- Nested Requirements ---
-
     @JsonProperty("requirements")
     private AiRequirementsDTO requirements;
-
-    // --- Inner Class for Resource Counts ---
 
     @Data
     @NoArgsConstructor

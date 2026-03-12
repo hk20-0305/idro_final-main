@@ -22,7 +22,7 @@ public class RiskScoreCalculator {
             case "CRITICAL" -> 40;
             case "HIGH" -> 30;
             case "MODERATE" -> 20;
-            default -> 10; // LOW or others
+            default -> 10;
         };
     }
 
@@ -33,7 +33,7 @@ public class RiskScoreCalculator {
             return 20;
         if (supplyHours <= 24)
             return 10;
-        return 5; // Fallback
+        return 5;
     }
 
     private int calculatePopulationScore(Integer population) {

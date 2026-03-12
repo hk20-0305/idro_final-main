@@ -11,20 +11,18 @@ public class Action {
     private String id;
     private String alertId;
 
-    // ✅ ADDED THIS TO FIX 'findByUserId' ERROR
     private String userId; 
 
     private String description;
     private String status; 
     private LocalDateTime timestamp;
 
-    private String priority;   // Stores "HIGH", "MEDIUM", "LOW"
-    private String role;       // Stores "GOV", "NGO", etc.
+    private String priority;
+    private String role;
     private String targetZone; 
     private String resourceType; 
     private int quantity;      
 
-    // --- GETTERS AND SETTERS ---
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

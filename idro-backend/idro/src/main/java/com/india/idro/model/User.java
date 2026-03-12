@@ -11,7 +11,6 @@ public class User {
     @Id
     private String id;
     
-    // ✅ ADD THIS FIELD (Critical for Login)
     private String username; 
     
     private String name;
@@ -30,7 +29,6 @@ public class User {
         this.role = role;
     }
 
-    // --- GETTERS AND SETTERS ---
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

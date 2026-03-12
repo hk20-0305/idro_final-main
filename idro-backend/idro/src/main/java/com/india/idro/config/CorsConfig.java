@@ -15,15 +15,13 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Allow requests from React frontend (localhost:3000)
         config.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",    // React development
-                "http://localhost:3001",    // Alternative React port
+                "http://localhost:3000",
+                "http://localhost:3001",
                 "http://127.0.0.1:3000",
-                "https://your-production-domain.com"  // Add your production domain here
+                "https://your-production-domain.com"
         ));
 
-        // Allow all HTTP methods
         config.setAllowedMethods(Arrays.asList(
                 "GET",
                 "POST",
@@ -33,13 +31,8 @@ public class CorsConfig {
                 "OPTIONS"
         ));
 
-        // Allow all headers
         config.setAllowedHeaders(Arrays.asList("*"));
-
-        // Allow credentials (cookies, authorization headers)
         config.setAllowCredentials(true);
-
-        // How long the response from a pre-flight request can be cached
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

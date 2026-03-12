@@ -9,20 +9,18 @@ public class Volunteer {
     @Id
     private String id;
 
-    private String volunteerId; // V001, V002, etc.
-    private String password; // Password for login
-    private String name; // Volunteer name
-    private String mobileNumber; // Mobile number
-    private String email; // Email address
-    private String location; // City/location
-    private String skills; // Skills (comma-separated)
-    private boolean available; // Availability status
+    private String volunteerId;
+    private String password;
+    private String name;
+    private String mobileNumber;
+    private String email;
+    private String location;
+    private String skills;
+    private boolean available;
 
-    // Constructors
     public Volunteer() {
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }

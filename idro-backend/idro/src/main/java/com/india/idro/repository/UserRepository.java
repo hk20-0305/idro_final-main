@@ -11,10 +11,8 @@ import java.util.List;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
 
-    // ✅ ADD THIS METHOD
     Optional<User> findByUsername(String username);
 
-    // (Keep your existing methods below)
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
     List<User> findByRole(UserRole role);

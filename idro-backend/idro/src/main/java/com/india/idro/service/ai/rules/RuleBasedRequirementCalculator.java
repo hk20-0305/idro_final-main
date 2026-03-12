@@ -14,17 +14,13 @@ public class RuleBasedRequirementCalculator {
         boolean medicinesNeeded = camp.isMedicinesNeeded();
         String severity = camp.getSeverity() != null ? camp.getSeverity() : "NORMAL";
 
-        // 1. Food & Water (Deterministic Ratio: 3 per person)
         int foodPackets = currentPeople * 3;
         int waterLiters = currentPeople * 3;
 
-        // 2. Beds Rule (Set beds equal to injured count)
         int bedsRequired = injuredCount;
 
-        // 3. Medical Kits Rule
         int medicalKitsRequired = medicinesNeeded ? injuredCount : 0;
 
-        // 4. Ambulance Rule
         int ambulancesRequired = 0;
         if (injuredCount > 0) {
             ambulancesRequired = 1;
@@ -33,11 +29,8 @@ public class RuleBasedRequirementCalculator {
             ambulancesRequired = 2;
         }
 
-        // 5. Volunteers Rule (1 per 50 people)
         int volunteersRequired = (int) Math.ceil((double) currentPeople / 50);
 
-        // 6. Toilets (Preserving existing ratio if not specified otherwise, usually 1
-        // per 20)
         int toiletsRequired = (int) Math.ceil((double) currentPeople / 20);
 
         return CampRequirementDTO.builder()

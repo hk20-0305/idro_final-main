@@ -14,7 +14,7 @@ import com.india.idro.service.ImpactAnalysisService;
 
 @RestController
 @RequestMapping("/api/impact-analysis")
-@CrossOrigin(origins = "*") // Allow requests from Frontend
+@CrossOrigin(origins = "*")
 public class ImpactAnalysisController {
 
     private static final Logger logger = LoggerFactory.getLogger(ImpactAnalysisController.class);
@@ -22,10 +22,6 @@ public class ImpactAnalysisController {
     @Autowired
     private ImpactAnalysisService impactAnalysisService;
 
-    /**
-     * GET /api/impact-analysis/{missionId}
-     * Fetches AI-driven impact analysis for a specific mission/disaster.
-     */
     @GetMapping("/{missionId}")
     public ResponseEntity<?> getMissionImpact(@PathVariable String missionId) {
         logger.info("Received request for impact analysis of mission ID: {}", missionId);

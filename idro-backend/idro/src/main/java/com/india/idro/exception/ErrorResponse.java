@@ -26,7 +26,6 @@ public class ErrorResponse {
 
     private List<String> details;
 
-    // Constructor for simple errors
     public ErrorResponse(LocalDateTime timestamp, int status, String error, String message, String path) {
         this.timestamp = timestamp;
         this.status = status;

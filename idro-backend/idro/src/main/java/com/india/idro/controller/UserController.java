@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*") // ✅ THIS ALLOWS REACT TO CONNECT
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
@@ -32,8 +32,6 @@ public class UserController {
         String username = loginData.get("username");
         String password = loginData.get("password");
         String role = loginData.get("role");
-
-        System.out.println("Login Attempt: " + username + " as " + role); // ✅ Debug Print
 
         User user = userService.loginUser(username, password, role);
 

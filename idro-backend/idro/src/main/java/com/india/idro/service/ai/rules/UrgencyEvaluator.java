@@ -7,7 +7,7 @@ public class UrgencyEvaluator {
 
     public int convertUrgencyToHours(String urgency) {
         if (urgency == null) {
-            return 12; // Default
+            return 12;
         }
 
         switch (urgency.toLowerCase()) {
@@ -19,7 +19,7 @@ public class UrgencyEvaluator {
             case "24 hours":
                 return 24;
             default:
-                return 12; // Default
+                return 12;
         }
     }
 }

@@ -33,21 +33,20 @@ public class Camp {
         this.alertId = alertId;
     }
 
-    private String name; // e.g., "Kerala Relief Hub A"
-    private CampStatus status; // CRITICAL, STABLE, MODERATE
-    private Integer urgencyScore; // 0-100
-    private String urgency; // New simplified urgency (Immediate, 6 hours, etc.)
-    private Integer population; // Number of people in camp
-    private Integer capacity; // Max people camp can hold
-    private int injuredCount; // Number of injured people
-    private boolean medicinesNeeded; // If true, medical kits are required
-    private String severity; // HIGH, MODERATE, LOW
-    private Boolean infrastructureDamage; // True if physical damage exists
-    private Stock stock; // Embedded document (food, water, medicine)
-    private String incomingAid; // e.g., "Seva Foundation > Food Kits (ETA: 2h)"
-    private String image; // Image URL (optional)
+    private String name;
+    private CampStatus status;
+    private Integer urgencyScore;
+    private String urgency;
+    private Integer population;
+    private Integer capacity;
+    private int injuredCount;
+    private boolean medicinesNeeded;
+    private String severity;
+    private Boolean infrastructureDamage;
+    private Stock stock;
+    private String incomingAid;
+    private String image;
 
-    // Location coordinates
     private Double latitude;
     private Double longitude;
 

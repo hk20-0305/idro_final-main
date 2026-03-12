@@ -29,30 +29,20 @@ public class VolunteerController {
         String volunteerId = loginRequest.get("volunteerId");
         String password = loginRequest.get("password");
 
-        System.out.println("🔐 Volunteer Login Attempt: " + volunteerId);
-        System.out.println("📝 Received password: " + password);
-
         Volunteer volunteer = volunteerService.getVolunteerByVolunteerId(volunteerId);
 
         if (volunteer == null) {
-            System.out.println("❌ Volunteer not found: " + volunteerId);
             return ResponseEntity.status(401).body(Map.of(
                     "success", false,
                     "message", "Invalid Volunteer ID or Password"));
         }
 
-        System.out.println("✅ Volunteer found: " + volunteer.getName());
-        System.out.println("🔑 Stored password: " + volunteer.getPassword());
-        System.out.println("🔍 Password match: " + password.equals(volunteer.getPassword()));
-
         if (password != null && password.equals(volunteer.getPassword())) {
-            System.out.println("✅ Login successful for: " + volunteerId);
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "message", "Login successful",
                     "volunteer", volunteer));
         } else {
-            System.out.println("❌ Password mismatch for: " + volunteerId);
             return ResponseEntity.status(401).body(Map.of(
                     "success", false,
                     "message", "Invalid Volunteer ID or Password"));

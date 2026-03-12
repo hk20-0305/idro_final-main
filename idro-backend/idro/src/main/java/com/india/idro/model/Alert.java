@@ -32,12 +32,10 @@ public class Alert {
     private String missing;
     private LocalDateTime createdAt;
 
-    // ✅ ADDED STATE FIELD FOR REGIONAL FILTERING
     private String state;
     private String responderName;
     private String urgency;
 
-    // --- GETTERS AND SETTERS ---
     public String getState() {
         return state;
     }

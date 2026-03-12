@@ -30,12 +30,9 @@ public class NGOController {
 
     @PostMapping("/login")
     public ResponseEntity<NGOLoginResponse> login(@RequestBody NGOLoginRequest request) {
-        System.out.println("🔐 NGO Login Attempt: " + request.getNgoId());
-
         NGO ngo = ngoService.authenticateNGO(request.getNgoId(), request.getPassword());
 
         if (ngo != null) {
-            // Remove password from response for security
             ngo.setPassword(null);
 
             NGOLoginResponse response = new NGOLoginResponse(
@@ -57,7 +54,6 @@ public class NGOController {
         NGO ngo = ngoService.getNGOProfile(ngoId);
 
         if (ngo != null) {
-            // Remove password from response
             ngo.setPassword(null);
             return ResponseEntity.ok(ngo);
         } else {
@@ -67,8 +63,6 @@ public class NGOController {
 
     @PutMapping("/resources")
     public ResponseEntity<?> updateResources(@RequestBody ResourceUpdateRequest request) {
-        System.out.println("📦 Updating resources for NGO: " + request.getNgoId());
-
         NGO updatedNGO = ngoService.updateResources(
                 request.getNgoId(),
                 request.getReliefSupplies(),
@@ -87,8 +81,6 @@ public class NGOController {
 
     @PutMapping("/availability")
     public ResponseEntity<?> updateAvailability(@RequestBody AvailabilityUpdateRequest request) {
-        System.out.println("🟢 Updating availability for NGO: " + request.getNgoId());
-
         NGO updatedNGO = ngoService.updateAvailability(
                 request.getNgoId(),
                 request.getAvailabilityStatus(),
@@ -106,19 +98,13 @@ public class NGOController {
     @GetMapping("/all")
     public ResponseEntity<List<NGO>> getAllNGOs(
             @org.springframework.web.bind.annotation.RequestParam(required = false) String disasterId) {
-        System.out.println("📋 Fetching NGOs for context: " + (disasterId != null ? disasterId : "GLOBAL"));
-
         List<NGO> ngos = ngoService.getAllNGOs(disasterId);
-
-        // Remove passwords from all NGOs
         ngos.forEach(ngo -> ngo.setPassword(null));
-
         return ResponseEntity.ok(ngos);
     }
 
     @GetMapping("/init")
     public ResponseEntity<String> initialize() {
-        System.out.println("🛠️ Manual NGO Initialization Triggered");
         ngoService.initializeDemoAccounts();
         return ResponseEntity.ok("NGO Demo accounts initialization triggered. Check console for details.");
     }

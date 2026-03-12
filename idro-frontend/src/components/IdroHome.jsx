@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { useNavigate } from "react-router-dom";
 import idroLogo from '../assets/logo.png';
 import DonationModal from './DonationModal';
+import EmergencySOSPanel from './EmergencySOSPanel';
 
 import {
   Bell,
@@ -19,7 +20,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Circle, MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Link } from 'react-router-dom';
-import { fetchIntelStream, fetchMarkers, fetchGdacsStream, fetchUsgsStream } from '../api/intelApi';
+import { fetchGdacsStream, fetchMarkers, fetchUsgsStream } from '../api/intelApi';
 import { idroApi } from '../services/api';
 
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -169,6 +170,7 @@ export default function IdroHome() {
   const [showDisasterModal, setShowDisasterModal] = useState(false);
   const [showResponseModal, setShowResponseModal] = useState(false);
   const [showDonationModal, setShowDonationModal] = useState(false);
+  const [showSOSPanel, setShowSOSPanel] = useState(false);
   const [intelMarkers, setIntelMarkers] = useState([]);
   const [gdacsStream, setGdacsStream] = useState([]);
   const [usgsStream, setUsgsStream] = useState([]);
@@ -430,7 +432,7 @@ export default function IdroHome() {
                 </div>
               </div>
 
-              {false && <div className="px-2 pt-3 pb-2">
+              <div className="px-2 pt-3 pb-2">
                 <div className="flex items-center gap-2 mb-2 px-1">
                   <div className="flex items-center gap-1.5 bg-orange-500/15 border border-orange-500/40 rounded-full px-3 py-1">
                     <span className="text-orange-400 text-xs">⚡</span>
@@ -450,7 +452,7 @@ export default function IdroHome() {
                     </div>
                   )}
                 </div>
-              </div>}
+              </div>
 
             </div>
           </div>
@@ -459,7 +461,10 @@ export default function IdroHome() {
       </div>
 
       <div className="fixed bottom-8 right-8 z-[90]">
-        <button className="bg-red-600 hover:bg-red-700 text-white w-14 h-14 rounded-full shadow-[0_0_30px_rgba(220,38,38,0.6)] flex items-center justify-center animate-bounce-slow transition-transform hover:scale-110 border-2 border-red-400">
+        <button 
+          onClick={() => setShowSOSPanel(true)}
+          className="bg-red-600 hover:bg-red-700 text-white w-14 h-14 rounded-full shadow-[0_0_30px_rgba(220,38,38,0.6)] flex items-center justify-center animate-bounce-slow transition-transform hover:scale-110 border-2 border-red-400"
+        >
           <Phone size={24} className="fill-current" />
         </button>
       </div>
@@ -519,6 +524,8 @@ export default function IdroHome() {
       )}
 
       <DonationModal open={showDonationModal} onClose={() => setShowDonationModal(false)} />
+      
+      {showSOSPanel && <EmergencySOSPanel onClose={() => setShowSOSPanel(false)} />}
 
     </div>
   );

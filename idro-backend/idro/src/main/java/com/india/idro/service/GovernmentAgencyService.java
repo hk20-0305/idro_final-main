@@ -39,7 +39,6 @@ public class GovernmentAgencyService implements CommandLineRunner {
     }
 
     public void initializeDemoAgencies() {
-        // Check if demo agencies already exist
         if (agencyRepository.count() > 0) {
             System.out.println("✅ Government Agency demo accounts already initialized");
             return;
@@ -47,7 +46,6 @@ public class GovernmentAgencyService implements CommandLineRunner {
 
         System.out.println("🔧 Initializing 4 Government Agency demo accounts...");
 
-        // Create 4 pre-defined government agency accounts
         List<GovernmentAgency> demoAgencies = Arrays.asList(
                 createDemoAgency(
                         "NDRF001",
@@ -94,7 +92,7 @@ public class GovernmentAgencyService implements CommandLineRunner {
         agency.setAgencyType(agencyType);
         agency.setLocation(location);
         agency.setContactNumber(contactNumber);
-        agency.setPassword("123"); // Demo password
+        agency.setPassword("123");
         agency.setOperatingRegion(operatingRegion);
         agency.setSupportedDisasterTypes(supportedDisasterTypes);
         agency.setAvailabilityStatus(AvailabilityStatus.AVAILABLE);
@@ -102,7 +100,6 @@ public class GovernmentAgencyService implements CommandLineRunner {
         agency.setCoverageRadius(CoverageRadius.DISTRICT_WIDE);
         agency.setLastUpdated(LocalDateTime.now());
 
-        // Initialize resources based on agency type
         Map<String, List<ResourceItem>> resources = new HashMap<>();
 
         switch (agencyType) {
@@ -178,7 +175,6 @@ public class GovernmentAgencyService implements CommandLineRunner {
 
         GovernmentAgency agency = agencyOpt.get();
 
-        // Save a snapshot of the submission to the new collection
         GovernmentResourceSubmission submission = new GovernmentResourceSubmission();
         submission.setAgencyId(agencyId);
         submission.setAgencyName(agency.getAgencyName());
@@ -203,7 +199,6 @@ public class GovernmentAgencyService implements CommandLineRunner {
             return new java.util.ArrayList<>();
         }
 
-        // 1. Fetch disaster context
         com.india.idro.model.Alert alert = alertRepository.findById(disasterId).orElse(null);
         if (alert == null || alert.getLocation() == null || alert.getLocation().trim().isEmpty()) {
             System.out.println("⚠️ Disaster or location context missing. Returning empty list for agencies.");
@@ -213,7 +208,6 @@ public class GovernmentAgencyService implements CommandLineRunner {
         String location = alert.getLocation();
         System.out.println("🏛️ Analyzing Agency Location: [" + location + "]");
 
-        // 2. Identify State by Keyword Matching
         String detectedState = null;
         for (String state : VALID_INDIAN_STATES) {
             if (location.toLowerCase().contains(state.toLowerCase())) {
@@ -229,11 +223,9 @@ public class GovernmentAgencyService implements CommandLineRunner {
 
         System.out.println("📍 Detected Agency State: [" + detectedState + "]");
 
-        // 3. Fetch agencies strictly by matching state (Operating Region)
         List<GovernmentAgency> agencies = agencyRepository.findByOperatingRegionIgnoreCase(detectedState);
         System.out.println("🔍 Found " + agencies.size() + " Agencies matching: " + detectedState);
 
-        // Remove passwords for security
         agencies.forEach(agency -> agency.setPassword(null));
         return agencies;
     }

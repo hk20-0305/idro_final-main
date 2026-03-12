@@ -16,7 +16,6 @@ public class CampAiAnalysis {
     private int population;
     private int injuredCount;
 
-    // Strict Operational Requirements (Single Source of Truth)
     private int foodPackets;
     private int waterLiters;
     private int beds;
@@ -24,10 +23,8 @@ public class CampAiAnalysis {
     private int volunteers;
     private int ambulances;
 
-    // Derived Status
     private String urgency;
 
-    // Metadata
     private String predictionSource;
     private List<String> explanations;
 }

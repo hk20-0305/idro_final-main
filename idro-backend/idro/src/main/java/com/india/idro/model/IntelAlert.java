@@ -15,14 +15,12 @@ public class IntelAlert {
     private String type;
     private String country;
     private String severity;
-    private String source; // e.g. "GDACS" or "USGS" — null treated as GDACS for legacy records
+    private String source;
 
     private Double latitude;
     private Double longitude;
 
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    // ---- Getters and Setters ----
 
     public String getId() {
         return id;

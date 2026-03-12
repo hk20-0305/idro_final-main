@@ -18,7 +18,6 @@ public class NGO {
     @Id
     private String id;
 
-    // Identity Fields (Immutable - Read-only)
     private String ngoId;
     private String password;
     private String ngoName;
@@ -29,19 +28,16 @@ public class NGO {
     private String operatingRegion;
     private List<String> supportedDisasterTypes;
 
-    // Resource Fields (Editable)
     private Map<String, ResourceItem> reliefSupplies;
     private Map<String, ResourceItem> medicalSupport;
     private Map<String, ResourceItem> shelterEssentials;
     private Map<String, ResourceItem> humanResources;
 
-    // Availability Fields
     private AvailabilityStatus availabilityStatus;
     private ResponseTime responseTime;
     private CoverageRadius coverageRadius;
     private String additionalNotes;
 
-    // Metadata
     private LocalDateTime lastUpdated;
     private LocalDateTime createdAt;
 
@@ -58,7 +54,6 @@ public class NGO {
         this.coverageRadius = CoverageRadius.DISTRICT_WIDE;
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }
