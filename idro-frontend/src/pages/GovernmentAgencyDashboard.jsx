@@ -9,16 +9,12 @@ export default function GovernmentAgencyDashboard() {
     const [updating, setUpdating] = useState(false);
     const [message, setMessage] = useState({ type: "", text: "" });
 
-    // Resource states - using Map structure
     const [resources, setResources] = useState({});
-
-    // Availability states
     const [availabilityStatus, setAvailabilityStatus] = useState("AVAILABLE");
     const [responseTime, setResponseTime] = useState("IMMEDIATE");
     const [coverageRadius, setCoverageRadius] = useState("DISTRICT_WIDE");
 
     useEffect(() => {
-        // Load agency profile from localStorage
         const storedAgency = localStorage.getItem("governmentAgency");
 
         if (!storedAgency) {
@@ -28,8 +24,6 @@ export default function GovernmentAgencyDashboard() {
 
         const profile = JSON.parse(storedAgency);
         setAgencyProfile(profile);
-
-        // Initialize resource states
         setResources(profile.resources || {});
         setAvailabilityStatus(profile.availabilityStatus || "AVAILABLE");
         setResponseTime(profile.responseTime || "IMMEDIATE");
@@ -197,8 +191,8 @@ export default function GovernmentAgencyDashboard() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
-                <div className="text-white text-xl">Loading dashboard...</div>
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <div className="text-emerald-400 text-xl font-mono animate-pulse">Establishing Secure Connection...</div>
             </div>
         );
     }
@@ -208,15 +202,14 @@ export default function GovernmentAgencyDashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0f172a] p-6">
+        <div className="min-h-screen bg-black p-6">
             <div className="max-w-7xl mx-auto">
-                {/* Header Section */}
-                <div className="bg-gradient-to-r from-purple-900/50 to-blue-900/50 border border-white/10 rounded-xl p-6 mb-6 shadow-xl">
+                <div className="bg-gradient-to-r from-emerald-900/20 to-black border border-white/10 rounded-xl p-6 mb-6 shadow-xl backdrop-blur-md">
                     <div className="flex justify-between items-start mb-4">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <h1 className="text-4xl font-bold text-white">{agencyProfile.agencyName}</h1>
-                                <span className="px-3 py-1 bg-blue-500/20 border border-blue-500/50 rounded-full text-blue-300 text-xs font-semibold">
+                                <h1 className="text-4xl font-bold text-white tracking-tight">{agencyProfile.agencyName}</h1>
+                                <span className="px-3 py-1 bg-emerald-500/20 border border-emerald-500/50 rounded-full text-emerald-400 text-xs font-semibold">
                                     {formatAgencyType(agencyProfile.agencyType)}
                                 </span>
                             </div>
@@ -250,7 +243,6 @@ export default function GovernmentAgencyDashboard() {
                     </div>
                 </div>
 
-                {/* Message Display */}
                 {message.text && (
                     <div className={`mb-6 p-4 rounded-lg border ${message.type === 'success'
                         ? 'bg-green-500/10 border-green-500/50 text-green-300'
@@ -261,10 +253,8 @@ export default function GovernmentAgencyDashboard() {
                 )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left Column - Overview */}
                     <div className="lg:col-span-1 space-y-6">
-                        {/* Overview Card */}
-                        <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
+                        <div className="bg-white/[0.02] border border-white/10 rounded-xl p-6 shadow-xl backdrop-blur-sm">
                             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -292,36 +282,32 @@ export default function GovernmentAgencyDashboard() {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Availability Section */}
-                        <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
+                        <div className="bg-white/[0.02] border border-white/10 rounded-xl p-6 shadow-xl backdrop-blur-sm">
                             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 Availability Status
                             </h2>
-
                             <div className="space-y-4">
                                 <div>
                                     <label className="block text-gray-300 text-sm font-semibold mb-2">Status</label>
                                     <select
                                         value={availabilityStatus}
                                         onChange={(e) => setAvailabilityStatus(e.target.value)}
-                                        className="w-full p-3 bg-black/40 border border-white/10 rounded text-white focus:outline-none focus:border-blue-500"
+                                        className="w-full p-3 bg-black/40 border border-white/10 rounded text-white focus:outline-none focus:border-emerald-500"
                                     >
                                         <option value="AVAILABLE">Available</option>
                                         <option value="LIMITED">Limited</option>
                                         <option value="NOT_AVAILABLE">Not Available</option>
                                     </select>
                                 </div>
-
                                 <div>
                                     <label className="block text-gray-300 text-sm font-semibold mb-2">Response Time</label>
                                     <select
                                         value={responseTime}
                                         onChange={(e) => setResponseTime(e.target.value)}
-                                        className="w-full p-3 bg-black/40 border border-white/10 rounded text-white focus:outline-none focus:border-blue-500"
+                                        className="w-full p-3 bg-black/40 border border-white/10 rounded text-white focus:outline-none focus:border-emerald-500"
                                     >
                                         <option value="IMMEDIATE">Immediate</option>
                                         <option value="SIX_HOURS">6 Hours</option>
@@ -329,13 +315,12 @@ export default function GovernmentAgencyDashboard() {
                                         <option value="TWENTY_FOUR_HOURS">24 Hours</option>
                                     </select>
                                 </div>
-
                                 <div>
                                     <label className="block text-gray-300 text-sm font-semibold mb-2">Coverage Radius</label>
                                     <select
                                         value={coverageRadius}
                                         onChange={(e) => setCoverageRadius(e.target.value)}
-                                        className="w-full p-3 bg-black/40 border border-white/10 rounded text-white focus:outline-none focus:border-blue-500"
+                                        className="w-full p-3 bg-black/40 border border-white/10 rounded text-white focus:outline-none focus:border-emerald-500"
                                     >
                                         <option value="FIVE_KM">5 km</option>
                                         <option value="TEN_KM">10 km</option>
@@ -343,11 +328,10 @@ export default function GovernmentAgencyDashboard() {
                                         <option value="STATE_WIDE">State-wide</option>
                                     </select>
                                 </div>
-
                                 <button
                                     onClick={handleUpdateAvailability}
                                     disabled={updating}
-                                    className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 py-3 px-6 rounded-lg font-bold text-white transition-all shadow-lg"
+                                    className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-600/50 py-3 px-6 rounded-lg font-bold text-white transition-all shadow-lg shadow-emerald-500/20"
                                 >
                                     {updating ? "Updating..." : "Update Availability"}
                                 </button>
@@ -355,9 +339,7 @@ export default function GovernmentAgencyDashboard() {
                         </div>
                     </div>
 
-                    {/* Right Column - Resources */}
                     <div className="lg:col-span-2 space-y-6">
-                        {/* NDRF Resources */}
                         {agencyProfile.agencyType === "NDRF" && (
                             <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
                                 <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
@@ -371,8 +353,6 @@ export default function GovernmentAgencyDashboard() {
                                 </div>
                             </div>
                         )}
-
-                        {/* Medical Team Resources */}
                         {agencyProfile.agencyType === "MEDICAL_TEAM" && (
                             <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
                                 <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
@@ -386,8 +366,6 @@ export default function GovernmentAgencyDashboard() {
                                 </div>
                             </div>
                         )}
-
-                        {/* Fire Team Resources */}
                         {agencyProfile.agencyType === "FIRE_TEAM" && (
                             <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
                                 <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
@@ -401,10 +379,8 @@ export default function GovernmentAgencyDashboard() {
                                 </div>
                             </div>
                         )}
-
-                        {/* Other Resources */}
                         {agencyProfile.agencyType === "OTHER" && (
-                            <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
+                            <div className="bg-white/[0.02] border border-white/10 rounded-xl p-6 shadow-xl backdrop-blur-sm">
                                 <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                                     <span className="text-2xl">👮</span>
                                     Other Resources
@@ -416,14 +392,12 @@ export default function GovernmentAgencyDashboard() {
                                 </div>
                             </div>
                         )}
-
-                        {/* Action Buttons */}
-                        <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
+                        <div className="bg-white/[0.02] border border-white/10 rounded-xl p-6 shadow-xl backdrop-blur-sm">
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <button
                                     onClick={handleUpdateResources}
                                     disabled={updating}
-                                    className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 py-3 px-6 rounded-lg font-bold text-white transition-all shadow-lg hover:shadow-blue-500/50"
+                                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-600/50 py-3 px-6 rounded-lg font-bold text-white transition-all shadow-lg hover:shadow-emerald-500/50"
                                 >
                                     {updating ? "Updating..." : "Update Resources"}
                                 </button>
@@ -496,15 +470,22 @@ const ResourceCheckbox = ({ category, resourceName, resources, setResources }) =
 
     return (
         <div className="flex items-center gap-3 p-3 bg-black/20 rounded border border-white/5 hover:border-white/10 transition-colors">
+            <input
+                type="checkbox"
+                checked={resource.available || false}
+                onChange={(e) => handleCheckboxChange(e.target.checked)}
+                className="w-5 h-5 rounded border-white/20 bg-black/40 text-emerald-600 focus:ring-emerald-500 focus:ring-offset-0 cursor-pointer"
+            />
             <div className="flex-1">
                 <label className="text-white font-medium text-sm">{resourceName}</label>
             </div>
             <input
                 type="number"
                 min="0"
-                value={resource.quantity ?? ''}
+                value={resource.quantity || 0}
                 onChange={(e) => handleQuantityChange(e.target.value)}
-                className="w-24 px-3 py-1.5 bg-black/40 border border-white/10 rounded text-white text-sm focus:outline-none focus:border-blue-500"
+                disabled={!resource.available}
+                className="w-24 px-3 py-1.5 bg-black/40 border border-white/10 rounded text-white text-sm focus:outline-none focus:border-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="Qty"
             />
         </div>

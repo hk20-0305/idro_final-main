@@ -13,7 +13,7 @@ export default function ReliefCalculationStandards() {
     return (
         <div className="mt-16 mb-8">
             <div className="rounded-[2rem] bg-slate-900/40 border border-slate-800/60 p-10 shadow-2xl relative overflow-hidden backdrop-blur-sm">
-                {/* Soft Background Accent */}
+
                 <div className="absolute -right-20 -bottom-20 h-80 w-80 rounded-full bg-blue-500/5 blur-[80px] pointer-events-none" />
 
                 <div className="flex items-center gap-4 mb-10">

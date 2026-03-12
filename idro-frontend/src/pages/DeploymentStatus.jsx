@@ -1,4 +1,4 @@
-import { Activity, MapPin, Truck } from "lucide-react";
+import { MapPin, Truck } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { idroApi } from "../services/api";
@@ -16,18 +16,13 @@ export default function DeploymentStatus() {
     const fetchDisasters = useCallback(async () => {
         try {
             const res = await idroApi.getAlerts();
-
-            // Normalize MongoDB _id → id
             const normalized = res.data.map(item => ({
                 ...item,
                 id: item.id || item._id
             }));
-
-            // Show OPEN and ASSIGNED missions for deployment status
             const active = normalized.filter(alert =>
                 alert.missionStatus === "OPEN" || alert.missionStatus === "ASSIGNED"
             );
-
             const uniqueDisasters = removeDuplicates(active);
             setDisasters(uniqueDisasters);
         } catch (err) {
@@ -39,93 +34,141 @@ export default function DeploymentStatus() {
 
     useEffect(() => {
         fetchDisasters();
-        const interval = setInterval(fetchDisasters, 10000); // 10s polling
+        const interval = setInterval(fetchDisasters, 10000);
         return () => clearInterval(interval);
     }, [fetchDisasters]);
 
-    const getCardStyle = (urgency, color) => {
-        // High / Immediate
-        if (urgency === "Immediate" || urgency === "High" || color === "RED")
-            return "bg-red-950/40 border-red-500/50 hover:border-red-500 hover:bg-red-900/40";
-
-        // Medium
-        if (urgency === "Medium" || color === "ORANGE")
-            return "bg-yellow-950/40 border-yellow-500/50 hover:border-yellow-500 hover:bg-yellow-900/40";
-
-        // Low / Default
-        return "bg-green-950/40 border-green-500/50 hover:border-green-500 hover:bg-green-900/40";
+    const getSeverityTheme = (magnitude) => {
+        const m = magnitude?.toLowerCase();
+        if (m === 'critical' || m === 'extreme')
+            return {
+                card: 'border-red-500/70 bg-red-950/20 hover:border-red-400 hover:bg-red-950/30',
+                glow: 'shadow-[0_0_30px_rgba(239,68,68,0.12)]',
+                strip: 'bg-red-500',
+                severityText: 'text-red-400',
+                hoverTitle: 'group-hover:text-red-400',
+                badge: 'bg-red-500/20 border border-red-500/40 text-red-300',
+            };
+        if (m === 'high')
+            return {
+                card: 'border-rose-500/70 bg-rose-950/20 hover:border-rose-400 hover:bg-rose-950/30',
+                glow: 'shadow-[0_0_25px_rgba(244,63,94,0.12)]',
+                strip: 'bg-rose-500',
+                severityText: 'text-rose-400',
+                hoverTitle: 'group-hover:text-rose-400',
+                badge: 'bg-rose-500/20 border border-rose-500/40 text-rose-300',
+            };
+        if (m === 'moderate' || m === 'medium' || m === 'orange')
+            return {
+                card: 'border-orange-500/70 bg-orange-950/20 hover:border-orange-400 hover:bg-orange-950/30',
+                glow: 'shadow-[0_0_25px_rgba(249,115,22,0.12)]',
+                strip: 'bg-orange-500',
+                severityText: 'text-orange-400',
+                hoverTitle: 'group-hover:text-orange-400',
+                badge: 'bg-orange-500/20 border border-orange-500/40 text-orange-300',
+            };
+        if (m === 'low' || m === 'watch' || m === 'minor')
+            return {
+                card: 'border-yellow-500/70 bg-yellow-950/20 hover:border-yellow-400 hover:bg-yellow-950/30',
+                glow: 'shadow-[0_0_25px_rgba(234,179,8,0.10)]',
+                strip: 'bg-yellow-500',
+                severityText: 'text-yellow-400',
+                hoverTitle: 'group-hover:text-yellow-400',
+                badge: 'bg-yellow-500/20 border border-yellow-500/40 text-yellow-300',
+            };
+        return {
+            card: 'border-emerald-500/50 bg-emerald-950/10 hover:border-emerald-400 hover:bg-emerald-950/20',
+            glow: 'shadow-[0_0_20px_rgba(16,185,129,0.08)]',
+            strip: 'bg-emerald-500',
+            severityText: 'text-emerald-400',
+            hoverTitle: 'group-hover:text-emerald-400',
+            badge: 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300',
+        };
     };
 
-    return (
-        <div className="min-h-screen bg-[#0f172a] text-white p-6 md:p-10 font-sans">
-
-            {/* Header */}
-            <div className="flex items-center gap-4 mb-8 border-b border-white/10 pb-6">
-                <div className="p-3 bg-green-600 rounded-lg shadow-[0_0_20px_rgba(34,197,94,0.5)] animate-pulse">
-                    <Truck size={32} className="text-white" />
-                </div>
-                <div>
-                    <h1 className="text-3xl font-black tracking-wider uppercase">Live Deployment Status</h1>
-                    <p className="text-slate-400 text-sm font-mono">REAL-TIME FIELD OPERATIONS TRACKING</p>
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <div className="text-zinc-600 font-mono text-[10px] tracking-[0.5em] animate-pulse">
+                    SYNCING_FIELD_UNITS...
                 </div>
             </div>
+        );
+    }
 
-            {loading && (
-                <div className="flex items-center gap-3 text-green-400 animate-pulse">
-                    <Activity /> Syncing with Field Units...
+    return (
+        <div className="min-h-screen bg-black text-white p-14 font-sans relative overflow-hidden">
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none z-0"></div>
+
+            <div className="relative z-10 max-w-7xl mx-auto">
+                <div>
+                    <div className="flex items-center gap-4">
+                        <Truck size={20} className="text-emerald-400" />
+                        <h1 className="text-3xl font-black tracking-[0.2em] text-white uppercase">
+                            Live Deployment Status
+                        </h1>
+                    </div>
+                    <p className="text-zinc-600 font-bold tracking-[0.4em] text-[10px] uppercase pl-9">
+                        Real-Time Field Operations Tracking
+                    </p>
                 </div>
-            )}
 
-            {!loading && disasters.length === 0 && (
-                <div className="text-slate-500 italic">No Active Deployments. All Units on Standby.</div>
-            )}
+                <div className="space-y-6">
+                    {disasters.length === 0 && (
+                        <div className="p-20 text-center border border-zinc-900 rounded-xl">
+                            <p className="text-zinc-700 font-black uppercase tracking-widest text-xs">No Active Deployments. All Units on Standby.</p>
+                        </div>
+                    )}
 
-            {disasters.length > 0 && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {disasters.map(d => (
-                        <Link
-                            key={d.id}
-                            to={`/deployment-analyzer/${d.id}`}
-                            className={`p-6 rounded-2xl border transition-all duration-300 group relative overflow-hidden block cursor-pointer ${getCardStyle(d.urgency, d.color)}`}
-                        >
-                            <div className="absolute -right-4 -top-4 opacity-5 text-white transform rotate-12 group-hover:scale-110 transition-transform">
-                                <Truck size={150} />
-                            </div>
+                    {disasters.map(d => {
+                        const theme = getSeverityTheme(d.magnitude);
+                        return (
+                            <Link
+                                key={d.id}
+                                to={`/deployment-analyzer/${d.id}`}
+                                className={`cursor-pointer border p-10 transition-all duration-300 group flex justify-between items-center relative overflow-hidden ${theme.card} ${theme.glow}`}
+                            >
+                                <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${theme.strip}`} />
 
-                            <div className="relative z-10">
-                                <div className="flex justify-between items-start mb-4">
-                                    <span className={`px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest border ${(d.urgency === "Immediate" || d.urgency === "High" || d.color === "RED")
-                                        ? "bg-red-600 text-white border-red-400"
-                                        : (d.urgency === "Medium" || d.color === "ORANGE")
-                                            ? "bg-yellow-500 text-black border-yellow-400"
-                                            : "bg-green-600 text-white border-green-400"
-                                        }`}>
-                                        {d.urgency ? d.urgency.toUpperCase() : "DEPLOYED"}
-                                    </span>
-
-                                    <span className="text-[10px] font-mono text-slate-400 bg-black/30 px-2 py-1 rounded border border-white/10">
-                                        STATUS: {d.missionStatus || "ACTIVE"}
-                                    </span>
-                                </div>
-
-                                <h2 className="text-2xl font-bold mb-3 group-hover:text-green-300 transition-colors">
-                                    {d.type || "MISSION"}
-                                </h2>
-
-                                <div className="flex items-center gap-2 text-slate-300 text-lg font-medium">
-                                    <MapPin size={20} className="text-green-500" /> {d.location || "Unknown Sector"}
-                                </div>
-
-                                {d.responderName && (
-                                    <div className="mt-4 pt-3 border-t border-white/10 flex items-center gap-2 text-sm text-yellow-400">
-                                        <Truck size={16} /> Lead Unit: {d.responderName}
+                                <div className="flex flex-col gap-4 flex-1 pl-4">
+                                    <h2 className={`text-5xl font-black text-white uppercase tracking-tighter transition-colors ${theme.hoverTitle}`}>
+                                        {d.type || "MISSION"}
+                                    </h2>
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-8 h-[1px] bg-zinc-700"></div>
+                                        <p className="text-[13px] text-zinc-500 font-bold uppercase tracking-[0.15em] leading-relaxed max-w-2xl flex items-center gap-2">
+                                            <MapPin size={13} className="text-zinc-600 flex-shrink-0" />
+                                            {d.location || "Unknown Sector"}
+                                        </p>
                                     </div>
-                                )}
-                            </div>
-                        </Link>
-                    ))}
+                                    {d.responderName && (
+                                        <div className="flex items-center gap-2 text-[12px] text-zinc-500 font-bold uppercase tracking-widest">
+                                            <Truck size={12} className="text-zinc-600" />
+                                            Lead Unit: <span className="text-yellow-400">{d.responderName}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex items-center gap-0 flex-shrink-0">
+                                    <div className="px-12 border-l border-zinc-800 flex flex-col items-end gap-2">
+                                        <span className="text-[9px] text-zinc-600 font-black uppercase tracking-[0.3em]">Severity</span>
+                                        <span className={`text-xl font-black uppercase tracking-[0.2em] ${theme.severityText}`}>
+                                            {d.magnitude || "UNKNOWN"}
+                                        </span>
+                                    </div>
+
+                                    <div className="px-12 border-l border-zinc-800 flex flex-col items-end gap-2">
+                                        <span className="text-[9px] text-zinc-600 font-black uppercase tracking-[0.3em]">Mission Status</span>
+                                        <div className={`px-5 py-1.5 font-black text-xs uppercase tracking-[0.35em] rounded ${theme.badge}`}>
+                                            {d.missionStatus || "ACTIVE"}
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
+                        );
+                    })}
                 </div>
-            )}
+            </div>
         </div>
     );
 }

@@ -52,7 +52,8 @@ POST /predict
 
 import joblib
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import logging
 import sys
@@ -69,6 +70,15 @@ logger = logging.getLogger(__name__)
 # Initialize FastAPI app
 # Title: Displayed in the interactive API docs (http://localhost:8000/docs)
 app = FastAPI(title="IDRO AI Prediction Service")
+
+# Add CORS Middleware to allow requests from the React frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # For development, allow all origins. Change to specific domains for production.
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --- Why we use these libraries ---
 # 1. FastAPI: A modern, fast (high-performance) web framework for building APIs with Python 3.7+.

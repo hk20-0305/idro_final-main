@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Alert Card Skeleton
+
 export function AlertSkeleton() {
   return (
     <div className="rounded-lg border-l-4 border-slate-700 bg-slate-800/30 p-4 space-y-3 animate-pulse">
@@ -14,7 +14,7 @@ export function AlertSkeleton() {
   );
 }
 
-// Camp Card Skeleton
+
 export function CampSkeleton() {
   return (
     <div className="bg-slate-800/50 border border-white/10 rounded-lg p-3 space-y-3 animate-pulse">
@@ -30,7 +30,7 @@ export function CampSkeleton() {
   );
 }
 
-// Message Skeleton
+
 export function MessageSkeleton() {
   return (
     <div className="p-3 rounded-lg bg-slate-800/50 border border-white/10 space-y-2 animate-pulse">
@@ -43,7 +43,7 @@ export function MessageSkeleton() {
   );
 }
 
-// Stats Card Skeleton
+
 export function StatsSkeleton() {
   return (
     <div className="flex items-center gap-3 animate-pulse">
@@ -56,11 +56,11 @@ export function StatsSkeleton() {
   );
 }
 
-// Full Dashboard Loading State
+
 export function DashboardSkeleton() {
   return (
     <div className="relative w-full h-screen bg-slate-900 overflow-hidden">
-      {/* Header Skeleton */}
+
       <header className="relative z-50 flex items-center justify-between px-6 py-3 border-b border-white/10 bg-slate-900/90">
         <div className="flex items-center gap-4">
           <div className="skeleton h-10 w-10 rounded"></div>
@@ -76,7 +76,7 @@ export function DashboardSkeleton() {
         </div>
       </header>
 
-      {/* Stats Bar Skeleton */}
+
       <div className="relative z-40 bg-slate-800/50 border-b border-white/10 px-6 py-3">
         <div className="grid grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
@@ -85,9 +85,9 @@ export function DashboardSkeleton() {
         </div>
       </div>
 
-      {/* Main Content Skeleton */}
+
       <main className="relative z-10 grid grid-cols-12 gap-0 h-[calc(100vh-160px)]">
-        {/* Left Panel */}
+
         <div className="col-span-3 bg-slate-900/90 border-r border-white/10 p-4 space-y-4">
           <div className="space-y-3">
             <div className="skeleton h-8 w-full rounded"></div>
@@ -103,7 +103,7 @@ export function DashboardSkeleton() {
           </div>
         </div>
 
-        {/* Center Map Skeleton */}
+
         <div className="col-span-6 relative bg-slate-800 flex items-center justify-center">
           <div className="text-center space-y-4">
             <div className="skeleton h-64 w-64 rounded-full mx-auto"></div>
@@ -111,7 +111,7 @@ export function DashboardSkeleton() {
           </div>
         </div>
 
-        {/* Right Panel */}
+
         <div className="col-span-3 bg-slate-900/90 border-l border-white/10 p-4 space-y-4">
           <div className="skeleton h-40 w-full rounded-xl"></div>
           <div className="space-y-3">

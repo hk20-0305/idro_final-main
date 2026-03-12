@@ -3,7 +3,6 @@ import axios from 'axios';
 const API_BASE_URL = 'http://localhost:8085/api/ngo';
 
 export const ngoApi = {
-    // Login NGO
     loginNGO: async (ngoId, password) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/login`, {
@@ -16,7 +15,6 @@ export const ngoApi = {
         }
     },
 
-    // Get NGO profile
     getNGOProfile: async (ngoId) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/profile/${ngoId}`);
@@ -26,7 +24,6 @@ export const ngoApi = {
         }
     },
 
-    // Update resources
     updateResources: async (resourceData) => {
         try {
             const response = await axios.put(`${API_BASE_URL}/resources`, resourceData);
@@ -36,7 +33,6 @@ export const ngoApi = {
         }
     },
 
-    // Update availability
     updateAvailability: async (availabilityData) => {
         try {
             const response = await axios.put(`${API_BASE_URL}/availability`, availabilityData);
@@ -46,7 +42,6 @@ export const ngoApi = {
         }
     },
 
-    // Get all NGOs (for government visibility)
     getAllNGOs: async () => {
         try {
             const response = await axios.get(`${API_BASE_URL}/all`);

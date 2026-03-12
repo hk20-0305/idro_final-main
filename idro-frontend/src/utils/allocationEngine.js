@@ -1,7 +1,3 @@
-/**
- * Shared logic for calculating mission allocations between camps and providers.
- */
-
 const etaRank = {
     'IMMEDIATE': 1,
     'SIX_HOURS': 2, '6 HOURS': 2,
@@ -32,9 +28,6 @@ export const calculateAllocations = (camps, providers) => {
         return [];
     }
 
-    console.log("Calculating Mission Allocation Strategy...");
-
-    // 1. Sort Camps by Priority Window (Urgent First)
     const sortedCamps = [...camps].sort((a, b) => {
         const aIdx = etaRank[a.urgency?.toUpperCase()] || 99;
         const bIdx = etaRank[b.urgency?.toUpperCase()] || 99;
@@ -42,7 +35,7 @@ export const calculateAllocations = (camps, providers) => {
     });
 
     const newAllocations = [];
-    let inventory = providers.map(p => ({ ...p })); // Local copy to track depletion
+    let inventory = providers.map(p => ({ ...p }));
 
     sortedCamps.forEach(camp => {
         const campNeeds = {
@@ -60,14 +53,12 @@ export const calculateAllocations = (camps, providers) => {
             let remainingNeed = campNeeds[resKey];
             if (remainingNeed <= 0) return;
 
-            // 2. Filter Providers (ETA matching: Provider ETA <= Camp Window)
             const campWindowRank = etaRank[camp.urgency?.toUpperCase()] || 99;
             let viableProviders = inventory.filter(p => {
                 const provRank = etaRank[p.rawResponseTime?.toUpperCase()] || 99;
                 return provRank <= campWindowRank && p[resKey] > 0;
             });
 
-            // 3. Strategic Conservation: Prefer SLOWEST viable providers first.
             viableProviders.sort((a, b) => {
                 const aRank = etaRank[a.rawResponseTime?.toUpperCase()] || 99;
                 const bRank = etaRank[b.rawResponseTime?.toUpperCase()] || 99;
@@ -78,7 +69,6 @@ export const calculateAllocations = (camps, providers) => {
                 return b[resKey] - a[resKey];
             });
 
-            // 4. Resource Assignment
             viableProviders.forEach(provider => {
                 if (remainingNeed <= 0) return;
 
@@ -102,7 +92,6 @@ export const calculateAllocations = (camps, providers) => {
             });
         });
 
-        // Convert grouped provider assignments into final allocation blocks
         Object.values(campAllocationsByProvider).forEach(assign => {
             const allocId = `${camp.campId}-${assign.provider.id}`;
             newAllocations.push({

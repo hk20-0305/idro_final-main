@@ -29,12 +29,10 @@ class ApiService {
     }
   }
 
-  // ---------- AUTH ----------
   login(data) {
     return this.request("/login", "POST", data);
   }
 
-  // ---------- ALERTS ----------
   getAlerts() {
     return this.request("/alerts");
   }
@@ -55,7 +53,6 @@ class ApiService {
     return this.request(`/alerts/${id}`, "DELETE");
   }
 
-  // ---------- ANALYTICS ----------
   getImpact(id) {
     return this.request(`/analytics/impact/${id}`);
   }
@@ -64,7 +61,6 @@ class ApiService {
     return this.request("/analytics/stats");
   }
 
-  // ---------- CAMPS ----------
   getCamps() {
     return this.request("/camps");
   }
@@ -73,7 +69,6 @@ class ApiService {
     return this.request("/camps", "POST", data);
   }
 
-  // ---------- ACTIONS ----------
   getActions() {
     return this.request("/actions");
   }

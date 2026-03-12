@@ -1,6 +1,0 @@
-@echo off
-echo Listing collections in idro_db...
-mongosh "mongodb://localhost:27017/idro_db" --eval "db.getCollectionNames()"
-echo.
-echo Listing all databases...
-mongosh "mongodb://localhost:27017" --eval "db.adminCommand({listDatabases: 1})"

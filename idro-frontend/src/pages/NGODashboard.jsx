@@ -9,20 +9,20 @@ export default function NGODashboard() {
     const [updating, setUpdating] = useState(false);
     const [message, setMessage] = useState({ type: "", text: "" });
 
-    // Resource states
+
     const [reliefSupplies, setReliefSupplies] = useState({});
     const [medicalSupport, setMedicalSupport] = useState({});
     const [shelterEssentials, setShelterEssentials] = useState({});
     const [humanResources, setHumanResources] = useState({});
 
-    // Availability states
+
     const [availabilityStatus, setAvailabilityStatus] = useState("AVAILABLE");
     const [responseTime, setResponseTime] = useState("IMMEDIATE");
     const [coverageRadius, setCoverageRadius] = useState("DISTRICT_WIDE");
     const [additionalNotes, setAdditionalNotes] = useState("");
 
     useEffect(() => {
-        // Load NGO profile from localStorage
+
         const storedProfile = localStorage.getItem("ngoProfile");
         const storedNgoId = localStorage.getItem("ngoId");
 
@@ -34,7 +34,7 @@ export default function NGODashboard() {
         const profile = JSON.parse(storedProfile);
         setNgoProfile(profile);
 
-        // Initialize resource states
+
         setReliefSupplies(profile.reliefSupplies || {});
         setMedicalSupport(profile.medicalSupport || {});
         setShelterEssentials(profile.shelterEssentials || {});
@@ -80,7 +80,7 @@ export default function NGODashboard() {
                 additionalNotes
             });
 
-            // Update availability separately
+
             const finalProfile = await ngoApi.updateAvailability({
                 ngoId: ngoProfile.ngoId,
                 availabilityStatus,
@@ -93,7 +93,7 @@ export default function NGODashboard() {
 
             setMessage({ type: "success", text: "Resources updated successfully!" });
 
-            // Clear message after 3 seconds
+
             setTimeout(() => setMessage({ type: "", text: "" }), 3000);
         } catch (error) {
             setMessage({ type: "error", text: "Failed to update resources. Please try again." });
@@ -185,8 +185,8 @@ export default function NGODashboard() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
-                <div className="text-white text-xl">Loading dashboard...</div>
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <div className="text-emerald-400 text-xl font-mono animate-pulse">Establishing Secure Connection...</div>
             </div>
         );
     }
@@ -196,15 +196,15 @@ export default function NGODashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0f172a] p-6">
+        <div className="min-h-screen bg-black p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header Section */}
-                <div className="bg-gradient-to-r from-purple-900/50 to-blue-900/50 border border-white/10 rounded-xl p-6 mb-6 shadow-xl">
+                <div className="bg-gradient-to-r from-emerald-900/20 to-black border border-white/10 rounded-xl p-6 mb-6 shadow-xl backdrop-blur-md">
                     <div className="flex justify-between items-start mb-4">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <h1 className="text-4xl font-bold text-white">{ngoProfile.ngoName}</h1>
-                                <span className="px-3 py-1 bg-blue-500/20 border border-blue-500/50 rounded-full text-blue-300 text-xs font-semibold">
+                                <h1 className="text-4xl font-bold text-white tracking-tight">{ngoProfile.ngoName}</h1>
+                                <span className="px-3 py-1 bg-emerald-500/20 border border-emerald-500/50 rounded-full text-emerald-400 text-xs font-semibold">
                                     Demo Account
                                 </span>
                             </div>
@@ -252,7 +252,7 @@ export default function NGODashboard() {
                     {/* Left Column - Overview */}
                     <div className="lg:col-span-1 space-y-6">
                         {/* Overview Card */}
-                        <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
+                        <div className="bg-white/[0.02] border border-white/10 rounded-xl p-6 shadow-xl backdrop-blur-sm">
                             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -282,7 +282,7 @@ export default function NGODashboard() {
                         </div>
 
                         {/* Availability Section */}
-                        <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
+                        <div className="bg-white/[0.02] border border-white/10 rounded-xl p-6 shadow-xl backdrop-blur-sm">
                             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -408,12 +408,12 @@ export default function NGODashboard() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
+                        <div className="bg-white/[0.02] border border-white/10 rounded-xl p-6 shadow-xl backdrop-blur-sm">
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <button
                                     onClick={handleUpdateResources}
                                     disabled={updating}
-                                    className="flex-1 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 py-3 px-6 rounded-lg font-bold text-white transition-all shadow-lg hover:shadow-purple-500/50"
+                                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-600/50 py-3 px-6 rounded-lg font-bold text-white transition-all shadow-lg hover:shadow-emerald-500/50"
                                 >
                                     {updating ? "Updating..." : "Update Resources"}
                                 </button>
@@ -439,6 +439,12 @@ export default function NGODashboard() {
 const ResourceCheckbox = ({ category, resourceKey, label, icon, resource, onResourceChange }) => {
     return (
         <div className="flex items-center gap-3 p-3 bg-black/20 rounded border border-white/5 hover:border-white/10 transition-colors">
+            <input
+                type="checkbox"
+                checked={resource?.available || false}
+                onChange={(e) => onResourceChange(category, resourceKey, 'available', e.target.checked)}
+                className="w-5 h-5 rounded border-white/20 bg-black/40 text-emerald-600 focus:ring-emerald-500 focus:ring-offset-0 cursor-pointer"
+            />
             <span className="text-2xl">{icon}</span>
             <div className="flex-1">
                 <label className="text-white font-medium text-sm">{label}</label>
@@ -446,9 +452,10 @@ const ResourceCheckbox = ({ category, resourceKey, label, icon, resource, onReso
             <input
                 type="number"
                 min="0"
-                value={resource?.quantity ?? ''}
+                value={resource?.quantity !== undefined ? resource.quantity : 0}
                 onChange={(e) => onResourceChange(category, resourceKey, 'quantity', e.target.value)}
-                className="w-24 px-3 py-1.5 bg-black/40 border border-white/10 rounded text-white text-sm focus:outline-none focus:border-purple-500"
+                disabled={!resource?.available}
+                className="w-24 px-3 py-1.5 bg-black/40 border border-white/10 rounded text-white text-sm focus:outline-none focus:border-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="Qty"
             />
         </div>

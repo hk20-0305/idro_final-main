@@ -1,5 +1,5 @@
 import * as Icons from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ReliefCalculationStandards from "../components/ReliefCalculationStandards";
 import { idroApi } from "../services/api";
@@ -14,7 +14,7 @@ export default function DisasterAnalyzer() {
   const [error, setError] = useState(null);
 
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -30,7 +30,6 @@ export default function DisasterAnalyzer() {
         const analysis = impactRes.data;
 
         if (analysis) {
-          // DIRECT MAPPING FROM BACKEND (ZERO LOGIC ON FRONTEND)
           const enrichedCamps = analysis.campAnalysisList.map(c => ({
             id: c.campId,
             name: c.campName,
@@ -59,46 +58,38 @@ export default function DisasterAnalyzer() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     if (id) fetchData();
-  }, [id]);
+  }, [id, fetchData]);
 
   if (loading) return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center gap-4">
-      <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-sm font-mono tracking-widest text-blue-400">LOADING OPERATIONAL DATA...</p>
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
+      <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(16,185,129,0.2)]"></div>
+      <p className="text-sm font-mono tracking-widest text-emerald-400 animate-pulse uppercase">Establishing Secure Uplink...</p>
     </div>
   );
 
   if (error || !disaster) return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center gap-4">
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
       <Icons.XCircle size={48} className="text-red-500" />
       <p className="text-slate-400">{error || "Data Not Found"}</p>
-      <button onClick={() => navigate(-1)} className="px-6 py-2 bg-slate-800 rounded hover:bg-slate-700 transition text-sm">Return to Dashboard</button>
+      <button onClick={() => navigate(-1)} className="px-6 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition text-sm font-bold uppercase tracking-widest">Return to Base</button>
     </div>
   );
 
   const getUrgencyTheme = (urgency) => {
     switch (urgency?.toUpperCase()) {
-      case "IMMEDIATE": return { bg: "bg-red-950/20", border: "border-red-500/30", strip: "bg-red-600", text: "text-red-500", glow: "shadow-[0_0_30px_rgba(239,68,68,0.15)]", label: "Critical Response" };
-      case "6 HOURS": return { bg: "bg-orange-950/20", border: "border-orange-500/30", strip: "bg-orange-600", text: "text-orange-500", glow: "shadow-[0_0_30px_rgba(249,115,22,0.15)]", label: "High Attention" };
-      case "12 HOURS": return { bg: "bg-yellow-950/20", border: "border-yellow-500/30", strip: "bg-yellow-600", text: "text-yellow-500", glow: "shadow-[0_0_30px_rgba(234,179,8,0.15)]", label: "Watch Closely" };
-      case "24 HOURS": return { bg: "bg-green-950/20", border: "border-green-500/30", strip: "bg-green-600", text: "text-green-500", glow: "shadow-[0_0_30px_rgba(34,197,94,0.15)]", label: "Stable" };
-      default: return { bg: "bg-slate-900", border: "border-slate-800", strip: "bg-slate-500", text: "text-slate-500", glow: "", label: "Stable" };
+      case "IMMEDIATE": return { bg: "bg-red-950/20", border: "border-red-500/80", strip: "bg-red-600", text: "text-red-500", glow: "shadow-[0_0_30px_rgba(239,68,68,0.2)]", label: "Critical Response" };
+      case "6 HOURS": return { bg: "bg-orange-950/20", border: "border-orange-500/80", strip: "bg-orange-600", text: "text-orange-500", glow: "shadow-[0_0_30px_rgba(249,115,22,0.2)]", label: "High Attention" };
+      case "12 HOURS": return { bg: "bg-yellow-950/20", border: "border-yellow-500/80", strip: "bg-yellow-600", text: "text-yellow-500", glow: "shadow-[0_0_30px_rgba(234,179,8,0.2)]", label: "Watch Closely" };
+      case "24 HOURS": return { bg: "bg-green-950/20", border: "border-green-500/80", strip: "bg-green-600", text: "text-green-500", glow: "shadow-[0_0_30px_rgba(34,197,94,0.2)]", label: "Stable" };
+      default: return { bg: "bg-slate-900", border: "border-white/20", strip: "bg-slate-500", text: "text-slate-500", glow: "", label: "Stable" };
     }
   };
 
-  const priorityMapping = {
-    "IMMEDIATE": 1,
-    "6 HOURS": 2,
-    "12 HOURS": 3,
-    "24 HOURS": 4
-  };
 
-  // Aggregated Intelligence Metrics
-  // Mission Status Logic
   const getMissionStatus = () => {
     if (camps.some(c => c.urgency?.toUpperCase() === "IMMEDIATE")) return { label: "Immediate Action Needed", color: "text-red-500" };
     if (camps.some(c => c.urgency?.toUpperCase() === "6 HOURS")) return { label: "Action Required Soon", color: "text-orange-500" };
@@ -108,7 +99,7 @@ export default function DisasterAnalyzer() {
   const missionStatus = getMissionStatus();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 p-8 font-sans">
+    <div className="min-h-screen bg-black text-slate-200 p-8 font-sans">
       <style>{`
         @keyframes alert-pulse-red {
           0% { border-color: rgba(239, 68, 68, 0.2); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.1); }
@@ -119,13 +110,12 @@ export default function DisasterAnalyzer() {
           animation: alert-pulse-red 1.5s infinite;
         }
       `}</style>
-      {/* Premium Command Header */}
-      <div className="relative mb-10 overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 p-8 shadow-xl">
+      <div className="relative mb-10 overflow-hidden rounded-2xl bg-white/[0.02] border border-white/10 p-8 shadow-2xl backdrop-blur-md">
         <div className="relative flex flex-col lg:flex-row justify-between items-start gap-6">
           <div className="max-w-4xl space-y-3">
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-slate-500 hover:text-blue-400 transition-all text-xs font-bold tracking-widest mb-2 group"
+              className="flex items-center gap-2 text-slate-500 hover:text-emerald-400 transition-all text-xs font-black tracking-widest mb-2 group"
             >
               <Icons.ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> BACK TO MISSIONS
             </button>
@@ -140,8 +130,8 @@ export default function DisasterAnalyzer() {
             </div>
 
             <div className="flex items-center gap-3 pt-2">
-              <span className="text-slate-500 text-[10px] font-mono bg-slate-800/50 px-2 py-1 rounded border border-white/5 uppercase">
-                ID: {disaster.id.slice(0, 8)}
+              <span className="text-emerald-500 text-[10px] font-mono bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 uppercase tracking-widest font-black">
+                OP_ID: {disaster.id.slice(0, 8)}
               </span>
             </div>
           </div>
@@ -171,7 +161,6 @@ export default function DisasterAnalyzer() {
         </div>
       </div>
 
-      {/* Operational Intelligence summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <SummaryTile
           label="OVERALL MISSION STATUS"
@@ -186,7 +175,7 @@ export default function DisasterAnalyzer() {
           value={camps.reduce((sum, c) => sum + (c.people || 0), 0)}
           colorClass="text-yellow-400"
           subtitle="People requiring support"
-          icon={<Icons.Users size={18} className="text-blue-400" />}
+          icon={<Icons.Users size={18} className="text-emerald-400" />}
           tooltip="Total population across all camps needing immediate assistance"
         />
         <SummaryTile
@@ -207,7 +196,6 @@ export default function DisasterAnalyzer() {
         />
       </div>
 
-      {/* Camps Operational Data */}
       <div className="space-y-6">
         <h2 className="text-lg font-bold text-slate-400 tracking-widest uppercase mb-4">Camp-wise Operational Data</h2>
 
@@ -215,23 +203,20 @@ export default function DisasterAnalyzer() {
           {camps.map((camp) => {
             const theme = getUrgencyTheme(camp.urgency);
             return (
-              <div key={camp.id} className={`${theme.bg} ${theme.border} border rounded-xl overflow-hidden flex shadow-lg hover:brightness-110 transition-all duration-300 ${theme.glow}`}>
-                {/* Urgency Strip */}
+              <div key={camp.id} className={`${theme.bg} ${theme.border} border-2 rounded-xl overflow-hidden flex shadow-lg hover:brightness-110 transition-all duration-300 ${theme.glow}`}>
                 <div className={`w-2.5 ${theme.strip}`} />
 
                 <div className="flex-1 p-6 space-y-6">
-                  {/* Section 1: Header */}
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-2xl font-black text-white leading-tight mb-2 tracking-tight">{camp.name.toUpperCase()}</h3>
                       <div className="flex gap-6 text-slate-200 text-[11px] font-black tracking-widest uppercase">
-                        <span className="flex items-center gap-2"><span className="text-slate-400">PEOPLE:</span> <span className="text-sky-400 text-sm">{camp.people}</span></span>
+                        <span className="flex items-center gap-2"><span className="text-slate-400">PEOPLE:</span> <span className="text-emerald-400 text-sm">{camp.people}</span></span>
                         <span className="flex items-center gap-2"><span className="text-slate-400">INJURED:</span> <span className="text-rose-400 text-sm">{camp.injured}</span></span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Section 2: Window & Status */}
                   <div className="flex items-center gap-8 border-y border-white/10 py-5">
                     <div className="flex flex-col">
                       <span className="text-xs text-slate-400 font-black uppercase mb-2 tracking-widest">Operational Survival Window</span>
@@ -247,7 +232,6 @@ export default function DisasterAnalyzer() {
                     </div>
                   </div>
 
-                  {/* Section 3: Resources Grid */}
                   <div className="grid grid-cols-3 gap-y-7 gap-x-4">
                     <ResourceItem label="FOOD PACKETS" value={camp.foodPackets} />
                     <ResourceItem label="WATER LITERS" value={camp.waterLiters} />
@@ -257,7 +241,6 @@ export default function DisasterAnalyzer() {
                     <ResourceItem label="AMBULANCES" value={camp.ambulances} />
                   </div>
 
-                  {/* Section 4: Operational Alerts */}
                   <div className="pt-2">
                     <span className="text-xs text-slate-400 font-black uppercase block mb-3 tracking-widest">COMMAND ALERTS</span>
                     <div className="space-y-3">
@@ -287,10 +270,10 @@ export default function DisasterAnalyzer() {
 
 function SummaryTile({ label, value, subtitle, icon, colorClass = "text-white", status, tooltip }) {
   return (
-    <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl relative group hover:border-blue-500/20 transition-all shadow-2xl flex flex-col justify-between h-full group" title={tooltip}>
+    <div className="bg-white/[0.02] border-2 border-white/20 p-6 rounded-2xl relative group hover:border-emerald-500/40 transition-all shadow-2xl flex flex-col justify-between h-full group backdrop-blur-sm" title={tooltip}>
       <div className="flex justify-between items-start mb-4">
         <p className="text-[11px] text-slate-400 font-black tracking-[0.15em] uppercase leading-none">{label}</p>
-        <div className="p-2 bg-slate-950 rounded-xl border border-slate-800 group-hover:border-blue-500/20 transition-colors shadow-inner">
+        <div className="p-2 bg-black/40 rounded-xl border border-white/5 group-hover:border-emerald-500/20 transition-colors shadow-inner">
           {icon}
         </div>
       </div>

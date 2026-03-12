@@ -9,7 +9,7 @@ export default function VolunteerDashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Load volunteer profile from localStorage
+
         const storedVolunteer = localStorage.getItem("volunteer");
 
         if (!storedVolunteer) {
@@ -20,7 +20,7 @@ export default function VolunteerDashboard() {
         const volunteer = JSON.parse(storedVolunteer);
         setSelectedVolunteer(volunteer);
 
-        // Fetch all volunteers for the scrollable list
+
         fetchAllVolunteers();
     }, [navigate]);
 
@@ -52,8 +52,8 @@ export default function VolunteerDashboard() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
-                <div className="text-white text-xl">Loading dashboard...</div>
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <div className="text-emerald-400 text-xl font-mono animate-pulse">Establishing Secure Connection...</div>
             </div>
         );
     }
@@ -63,10 +63,10 @@ export default function VolunteerDashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0f172a] p-6">
+        <div className="min-h-screen bg-black p-6">
             <div className="max-w-7xl mx-auto">
-                {/* Scrollable Volunteer IDs */}
-                <div className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 border border-white/10 rounded-xl p-4 mb-6 shadow-xl">
+
+                <div className="bg-gradient-to-r from-emerald-900/20 to-black border border-white/10 rounded-xl p-4 mb-6 shadow-xl backdrop-blur-md">
                     <h2 className="text-white text-sm font-semibold mb-3">Select Volunteer</h2>
                     <div className="flex gap-3 overflow-x-auto pb-2">
                         {volunteers.map((vol) => (
@@ -74,8 +74,8 @@ export default function VolunteerDashboard() {
                                 key={vol.volunteerId}
                                 onClick={() => handleVolunteerSelect(vol.volunteerId)}
                                 className={`px-6 py-3 rounded-lg font-bold text-sm whitespace-nowrap transition-all ${selectedVolunteer.volunteerId === vol.volunteerId
-                                        ? "bg-blue-600 text-white shadow-lg shadow-blue-500/50"
-                                        : "bg-white/10 text-gray-300 hover:bg-white/20"
+                                    ? "bg-emerald-600 text-white shadow-lg shadow-emerald-500/50"
+                                    : "bg-white/10 text-gray-300 hover:bg-white/20"
                                     }`}
                             >
                                 {vol.volunteerId}
@@ -84,8 +84,8 @@ export default function VolunteerDashboard() {
                     </div>
                 </div>
 
-                {/* Header Section - Name and Mobile */}
-                <div className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 border border-white/10 rounded-xl p-6 mb-6 shadow-xl">
+
+                <div className="bg-gradient-to-r from-emerald-900/20 to-black border border-white/10 rounded-xl p-6 mb-6 shadow-xl backdrop-blur-md">
                     <div className="flex justify-between items-start">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
@@ -119,10 +119,10 @@ export default function VolunteerDashboard() {
                     </div>
                 </div>
 
-                {/* Volunteer Details */}
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Left Column - Profile Info */}
-                    <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
+
+                    <div className="bg-white/[0.02] border border-white/10 rounded-xl p-6 shadow-xl backdrop-blur-sm">
                         <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                             <span className="text-2xl">👤</span>
                             Volunteer Profile
@@ -147,7 +147,7 @@ export default function VolunteerDashboard() {
                         </div>
                     </div>
 
-                    {/* Right Column - Availability Status */}
+
                     <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 shadow-xl">
                         <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                             <span className="text-2xl">📋</span>

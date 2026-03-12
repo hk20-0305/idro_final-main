@@ -11,29 +11,30 @@ import NGODashboard from "./pages/NGODashboard";
 import VolunteerForm from "./pages/VolunteerForm";
 import VolunteerLogin from "./pages/VolunteerLogin";
 import DeploymentAnalyzer from "./pages/DeploymentAnalyzer";
+import About from "./pages/About";
 
-// Import the components
+
 import IdroHome from './components/IdroHome';
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Main pages */}
+
         <Route path="/" element={<IdroHome />} />
         <Route path="/command" element={<IdroHome />} />
 
-        {/* Disaster flow */}
+
         <Route path="/active-disasters" element={<ActiveDisasters />} />
 
-        {/* Volunteer flow */}
+
         <Route path="/login" element={<VolunteerLogin />} />
         <Route path="/volunteer-form" element={<VolunteerForm />} />
 
-        {/* NGO flow */}
+
         <Route path="/ngo-dashboard" element={<NGODashboard />} />
 
-        {/* Government Agency flow */}
+
         <Route path="/government-login" element={<GovernmentAgencyLogin />} />
         <Route path="/government-dashboard" element={<GovernmentAgencyDashboard />} />
 
@@ -45,6 +46,7 @@ function App() {
         <Route path="/disasterdetails2/:id" element={<DisasterDetails2 />} />
         <Route path="/deployment-status" element={<DeploymentStatus />} />
         <Route path="/deployment-analyzer/:id" element={<DeploymentAnalyzer />} />
+        <Route path="/about" element={<About />} />
 
 
       </Routes>

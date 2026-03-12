@@ -6,7 +6,6 @@ const BlankPage = () => {
 
     return (
         <div className="h-screen w-screen bg-[#0f172a] flex flex-col items-center justify-center relative overflow-hidden">
-            {/* Background Texture */}
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none z-0"></div>
             
             <div className="relative z-10 flex flex-col items-center gap-8">

@@ -1,10 +1,10 @@
 import React, { useState, useContext, createContext, useCallback } from 'react';
 import { CheckCircle, AlertCircle, AlertTriangle, X, Info } from 'lucide-react';
 
-// Create Toast Context
+
 const ToastContext = createContext();
 
-// Toast Provider Component
+
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
@@ -13,12 +13,12 @@ export function ToastProvider({ children }) {
   }, []);
 
   const addToast = useCallback((message, type = 'info', duration = 3000) => {
-    const id = Date.now() + Math.random(); // Ensure unique ID
+    const id = Date.now() + Math.random();
     const newToast = { id, message, type, duration };
     
     setToasts(prev => [...prev, newToast]);
     
-    // Auto remove after duration
+
     if (duration > 0) {
       setTimeout(() => {
         removeToast(id);
@@ -34,7 +34,7 @@ export function ToastProvider({ children }) {
   );
 }
 
-// Toast Container - Renders all active toasts
+
 function ToastContainer({ toasts, removeToast }) {
   return (
     <div className="fixed top-20 right-6 z-[9999] space-y-3 pointer-events-none">
@@ -49,16 +49,16 @@ function ToastContainer({ toasts, removeToast }) {
   );
 }
 
-// Individual Toast Component
+
 function Toast({ id, message, type, onClose }) {
   const [isExiting, setIsExiting] = useState(false);
 
   const handleClose = () => {
     setIsExiting(true);
-    setTimeout(onClose, 300); // Match animation duration
+    setTimeout(onClose, 300);
   };
 
-  // Configuration for different toast types
+
   const config = {
     success: {
       icon: CheckCircle,
@@ -108,17 +108,17 @@ function Toast({ id, message, type, onClose }) {
         animate-slideInRight
       `}
     >
-      {/* Icon */}
+
       <div className={`p-2 rounded-full bg-black/20 flex-shrink-0`}>
         <Icon size={20} className={iconColor} />
       </div>
       
-      {/* Message */}
+
       <p className="text-white text-sm font-medium flex-1 break-words">
         {message}
       </p>
       
-      {/* Close Button */}
+
       <button 
         onClick={handleClose}
         className="p-1 hover:bg-white/10 rounded-full transition-colors flex-shrink-0"
@@ -130,7 +130,7 @@ function Toast({ id, message, type, onClose }) {
   );
 }
 
-// Custom Hook to use Toast
+
 export function useToast() {
   const context = useContext(ToastContext);
   if (!context) {

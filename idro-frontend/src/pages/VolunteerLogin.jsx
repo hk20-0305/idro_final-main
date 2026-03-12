@@ -27,25 +27,25 @@ const ALL_NGOS = [
   { id: "NGO003", name: "NGO003 - OXFAM INDIA", state: "Maharashtra" },
   { id: "NGO004", name: "NGO004 - SAVE THE CHILDREN", state: "Maharashtra" },
   { id: "NGO005", name: "NGO005 - GOONJ RELIEF", state: "Maharashtra" },
-  // RAJASTHAN
+  { id: "NGO005", name: "NGO005 - GOONJ RELIEF", state: "Maharashtra" },
   { id: "NGO006", name: "NGO006 - RAJASTHAN SEVA TRUST", state: "Rajasthan" },
   { id: "NGO007", name: "NGO007 - DESERT RELIEF FOUNDATION", state: "Rajasthan" },
   { id: "NGO008", name: "NGO008 - MARWAR HUMANITARIAN AID", state: "Rajasthan" },
   { id: "NGO009", name: "NGO009 - KOTA DISASTER RESPONSE", state: "Rajasthan" },
   { id: "NGO010", name: "NGO010 - AJMER COMMUNITY SUPPORT", state: "Rajasthan" },
-  // ASSAM
+  { id: "NGO010", name: "NGO010 - AJMER COMMUNITY SUPPORT", state: "Rajasthan" },
   { id: "NGO011", name: "NGO011 - ASSAM FLOOD RELIEF", state: "Assam" },
   { id: "NGO012", name: "NGO012 - BRAHMAPUTRA AID", state: "Assam" },
   { id: "NGO013", name: "NGO013 - NORTHEAST HUMANITARIAN", state: "Assam" },
   { id: "NGO014", name: "NGO014 - TEZPUR EMERGENCY CARE", state: "Assam" },
   { id: "NGO015", name: "NGO015 - JORHAT RURAL SUPPORT", state: "Assam" },
-  // GUJARAT
+  { id: "NGO015", name: "NGO015 - JORHAT RURAL SUPPORT", state: "Assam" },
   { id: "NGO016", name: "NGO016 - GUJARAT DISASTER CARE", state: "Gujarat" },
   { id: "NGO017", name: "NGO017 - SURAT RELIEF NETWORK", state: "Gujarat" },
   { id: "NGO018", name: "NGO018 - VADODARA COMMUNITY AID", state: "Gujarat" },
   { id: "NGO019", name: "NGO019 - SAURASHTRA EMERGENCY", state: "Gujarat" },
   { id: "NGO020", name: "NGO020 - BHAVNAGAR COASTAL", state: "Gujarat" },
-  // UTTAR PRADESH
+  { id: "NGO020", name: "NGO020 - BHAVNAGAR COASTAL", state: "Gujarat" },
   { id: "NGO021", name: "NGO021 - LUCKNOW RELIEF FOUNDATION", state: "Uttar Pradesh" },
   { id: "NGO022", name: "NGO022 - KANPUR HUMANITARIAN", state: "Uttar Pradesh" },
   { id: "NGO023", name: "NGO023 - VARANASI SEVA MANDAL", state: "Uttar Pradesh" },
@@ -56,15 +56,13 @@ const ALL_NGOS = [
 export default function LoginPage() {
   const navigate = useNavigate();
 
-  // State to track the selected user type
-  const [userType, setUserType] = useState(""); // 'volunteer' | 'government' | 'ngo'
-  const [agencyType, setAgencyType] = useState(""); // For government agency type selection
+  const [userType, setUserType] = useState("");
+  const [agencyType, setAgencyType] = useState("");
 
   const [id, setId] = useState("");
   const [pass, setPass] = useState("");
   const [error, setError] = useState("");
 
-  // State for Searchable STATE Dropdown
   const [selectedState, setSelectedState] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -78,7 +76,6 @@ export default function LoginPage() {
     ngo => ngo.state === selectedState
   );
 
-  // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -90,7 +87,6 @@ export default function LoginPage() {
   }, []);
 
   const handleLogin = () => {
-    // Validation for NGO Organization flow
     if (userType === "ngo") {
       if (!selectedState || !id) {
         setError("Please select state and NGO to continue.");
@@ -170,52 +166,50 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6 relative overflow-hidden font-sans">
-      {/* Premium Background: Mesh Gradient and Noise */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(30,58,138,0.15)_0%,transparent_50%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.6)_0%,transparent_50%)] pointer-events-none z-0"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05)_0%,transparent_60%)] pointer-events-none z-0"></div>
-
-      {/* Abstract Grid Lines */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none z-0"></div>
-
-      <div className="w-full max-w-6xl relative z-10">
-
-        {/* Header Section */}
-        <div className="text-center mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
-            <Radio size={12} className="animate-pulse" /> IDRO Global Network Access
-          </div>
-          <h2 className="text-5xl font-black text-white tracking-tighter sm:text-6xl">
-            LOGIN <span className="text-blue-500">PORTAL</span>
-          </h2>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto font-medium leading-relaxed">
-            Select your administrative authority to access authorized relief operations,
-            resource deployment, and tactical disaster coordination.
-          </p>
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-8 pt-24 md:p-12 md:pt-32 relative">
+      <button
+        onClick={() => {
+          if (userType) setUserType("");
+          else navigate(-1);
+        }}
+        className="absolute top-6 left-6 md:top-8 md:left-8 flex items-center gap-3 px-5 py-2.5 bg-black/40 hover:bg-black/60 border border-white/10 hover:border-emerald-500/40 rounded-xl backdrop-blur-md transition-all group z-50 text-xs font-bold text-slate-300 hover:text-white shadow-xl"
+      >
+        <ArrowLeft size={16} className="text-slate-400 group-hover:text-emerald-400 group-hover:-translate-x-1 transition-all" />
+        <span className="tracking-widest uppercase">Go Back</span>
+      </button>
+      <div className={`w-full max-w-6xl text-center space-y-4 transition-all duration-700 ease-in-out ${userType ? 'mb-8 scale-90 opacity-90' : 'mb-16'}`}>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+          <Radio size={12} className="animate-pulse" /> IDRO Global Network Access
         </div>
+        <h2 className="text-5xl font-black text-white tracking-tighter sm:text-6xl">
+          LOGIN <span className="text-emerald-500">PORTAL</span>
+        </h2>
+        <p className="text-slate-400 text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+          Select your administrative authority to access authorized relief operations,
+          resource deployment, and tactical disaster coordination.
+        </p>
+      </div>
 
-        {/* --- PORTAL SELECTION --- */}
+      <div className="w-full">
+
         {!userType ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Volunteer Login Card */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto w-full">
             <PortalCard
               icon={<Users size={32} />}
               title="Volunteer"
               description="Contribute to real-time ground intelligence and humanitarian field support."
-              color="blue"
+              color="emerald"
               onClick={() => setUserType("volunteer")}
             />
 
-            {/* NGO Card */}
             <PortalCard
               icon={<Globe size={32} />}
               title="NGO Organization"
               description="Coordinate inter-agency logistics, supply chains, and large-scale relief missions."
-              color="purple"
+              color="emerald"
               onClick={() => setUserType("ngo")}
             />
 
-            {/* Government Card */}
             <PortalCard
               icon={<ShieldCheck size={32} />}
               title="Gov Command"
@@ -225,11 +219,9 @@ export default function LoginPage() {
             />
           </div>
         ) : (
-          /* --- LOGIN FORM SECTION --- */
           <div className="max-w-md mx-auto">
-            <div className="bg-slate-900/40 backdrop-blur-xl p-10 rounded-[2.5rem] border border-white/5 shadow-2xl relative overflow-hidden group">
-              {/* Decorative Glow */}
-              <div className={`absolute -top-24 -right-24 w-48 h-48 blur-[80px] opacity-20 transition-colors ${userType === 'volunteer' ? 'bg-blue-500' : userType === 'ngo' ? 'bg-purple-500' : 'bg-emerald-500'
+            <div className="bg-white/[0.02] p-8 rounded-xl border border-white/10 shadow-2xl backdrop-blur-md">
+              <div className={`absolute -top-24 -right-24 w-48 h-48 blur-[80px] opacity-20 transition-colors ${userType === 'volunteer' ? 'bg-emerald-500' : userType === 'ngo' ? 'bg-emerald-500' : 'bg-emerald-500'
                 }`}></div>
 
               <button
@@ -250,7 +242,6 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-6">
-                {/* Government Agency Type Selection */}
                 {userType === "government" && (
                   <div className="space-y-2">
                     <label className="text-[10px] text-slate-500 font-black uppercase tracking-widest px-1">Agency Authority</label>
@@ -268,16 +259,14 @@ export default function LoginPage() {
                   </div>
                 )}
 
-                {/* Account Selection for Pre-Approved IDs */}
                 {(userType === "ngo" || userType === "volunteer") && (
                   <>
-                    {/* SEARCHABLE STATE DROPDOWN (NGO ONLY) */}
                     {userType === "ngo" && (
                       <div className="space-y-2 relative" ref={dropdownRef}>
                         <label className="text-[10px] text-slate-500 font-black uppercase tracking-widest px-1">STATE</label>
                         <div
                           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                          className={`w-full p-4 bg-black/40 border ${isDropdownOpen ? 'border-purple-500/50 ring-2 ring-purple-500/20' : 'border-white/5'} rounded-2xl text-white font-bold flex justify-between items-center cursor-pointer transition-all hover:bg-black/60`}
+                          className={`w-full p-4 bg-black/40 border ${isDropdownOpen ? 'border-emerald-500/50 ring-2 ring-emerald-500/20' : 'border-white/5'} rounded-2xl text-white font-bold flex justify-between items-center cursor-pointer transition-all hover:bg-black/60`}
                         >
                           <span className={selectedState ? "text-white" : "text-slate-700"}>
                             {selectedState || "-- SELECT STATE --"}
@@ -305,11 +294,11 @@ export default function LoginPage() {
                                     key={state}
                                     onClick={() => {
                                       setSelectedState(state);
-                                      setId(""); // Reset NGO selection when state changes
+                                      setId("");
                                       setIsDropdownOpen(false);
                                       setSearchTerm("");
                                     }}
-                                    className={`p-4 text-sm font-bold cursor-pointer transition-colors flex items-center justify-between group ${selectedState === state ? 'bg-purple-600 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                                    className={`p-4 text-sm font-bold cursor-pointer transition-colors flex items-center justify-between group ${selectedState === state ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
                                   >
                                     {state}
                                     {selectedState === state && <ShieldCheck size={14} />}
@@ -332,7 +321,7 @@ export default function LoginPage() {
                         value={id}
                         onChange={(e) => setId(e.target.value)}
                         disabled={userType === "ngo" && !selectedState}
-                        className={`w-full p-4 bg-black/40 border border-white/5 rounded-2xl text-white font-bold focus:outline-none focus:ring-2 appearance-none cursor-pointer transition-all ${userType === "ngo" && !selectedState ? "opacity-50 cursor-not-allowed" : ""} ${userType === 'volunteer' ? 'focus:ring-blue-500/50' : 'focus:ring-purple-500/50'
+                        className={`w-full p-4 bg-black/40 border border-white/5 rounded-2xl text-white font-bold focus:outline-none focus:ring-2 appearance-none cursor-pointer transition-all ${userType === "ngo" && !selectedState ? "opacity-50 cursor-not-allowed" : ""} ${userType === 'volunteer' ? 'focus:ring-emerald-500/50' : 'focus:ring-emerald-500/50'
                           }`}
                       >
                         <option value="" disabled className="bg-slate-900">
@@ -364,7 +353,6 @@ export default function LoginPage() {
                   </>
                 )}
 
-                {/* Legacy Manual Input (Fallback) */}
                 {userType === "government" && (
                   <div className="space-y-2">
                     <label className="text-[10px] text-slate-500 font-black uppercase tracking-widest px-1">Command ID</label>
@@ -439,7 +427,7 @@ function PortalCard({ icon, title, description, color, onClick }) {
   return (
     <div
       onClick={onClick}
-      className={`p-10 rounded-[3rem] border bg-slate-900/40 backdrop-blur-md shadow-2xl transition-all duration-500 cursor-pointer group flex flex-col items-center text-center ${colorMap[color]}`}
+      className={`p-12 rounded-[3.5rem] border bg-white/[0.02] backdrop-blur-md shadow-2xl transition-all duration-500 cursor-pointer group flex flex-col items-center text-center ${colorMap[color]}`}
     >
       <div className={`w-20 h-20 rounded-3xl flex items-center justify-center text-white mb-8 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500 shadow-xl ${iconBase[color]}`}>
         {icon}

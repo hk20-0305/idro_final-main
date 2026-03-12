@@ -1,3 +1,4 @@
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ngoApi } from "../services/ngoApi";
@@ -23,11 +24,11 @@ export default function NGOLogin() {
             const response = await ngoApi.loginNGO(ngoId, password);
 
             if (response.success) {
-                // Store NGO profile in localStorage
+
                 localStorage.setItem("ngoProfile", JSON.stringify(response.ngoProfile));
                 localStorage.setItem("ngoId", response.ngoProfile.ngoId);
 
-                // Redirect to dashboard
+
                 navigate("/ngo-dashboard");
             } else {
                 setError(response.message || "Login failed");
@@ -46,9 +47,16 @@ export default function NGOLogin() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4">
+        <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 pt-24 md:p-12 md:pt-32 relative">
+            <button
+                onClick={() => navigate(-1)}
+                className="absolute top-6 left-6 md:top-8 md:left-8 flex items-center gap-3 px-5 py-2.5 bg-black/40 hover:bg-black/60 border border-white/10 hover:border-emerald-500/40 rounded-xl backdrop-blur-md transition-all group z-50 text-xs font-bold text-slate-300 hover:text-white shadow-xl"
+            >
+                <ArrowLeft size={16} className="text-slate-400 group-hover:text-emerald-400 group-hover:-translate-x-1 transition-all" />
+                <span className="tracking-widest uppercase">Go Back</span>
+            </button>
             <div className="w-full max-w-md">
-                <div className="bg-[#1e293b] p-8 rounded-xl border border-white/10 shadow-xl">
+                <div className="bg-white/[0.02] p-8 rounded-xl border border-white/10 shadow-2xl backdrop-blur-md">
                     <button
                         onClick={() => navigate("/login")}
                         className="text-gray-400 hover:text-white mb-6 flex items-center gap-2 transition-colors"
@@ -60,7 +68,7 @@ export default function NGOLogin() {
                     </button>
 
                     <div className="text-center mb-8">
-                        <div className="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div className="w-20 h-20 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-[0_0_20px_rgba(16,185,129,0.4)]">
                             <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
@@ -80,7 +88,7 @@ export default function NGOLogin() {
                                 value={ngoId}
                                 onChange={(e) => setNgoId(e.target.value)}
                                 onKeyPress={handleKeyPress}
-                                className="w-full p-3 bg-black/40 border border-white/10 rounded text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
+                                className="w-full p-3 bg-black/40 border border-white/10 rounded text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors"
                             />
                         </div>
 
@@ -107,20 +115,20 @@ export default function NGOLogin() {
                         <button
                             onClick={handleLogin}
                             disabled={loading}
-                            className="w-full bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 py-3 rounded font-bold text-white transition-all shadow-lg hover:shadow-purple-500/50"
+                            className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-600/50 py-3 rounded font-bold text-white transition-all shadow-lg hover:shadow-emerald-500/50"
                         >
                             {loading ? "Logging in..." : "Login to Dashboard"}
                         </button>
 
-                        <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded">
-                            <p className="text-blue-300 text-xs font-semibold mb-2">Demo Accounts:</p>
+                        <div className="mt-6 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded">
+                            <p className="text-emerald-300 text-xs font-semibold mb-2">Demo Accounts:</p>
                             <div className="text-gray-400 text-xs space-y-1">
                                 <p>NGO001 - Red Cross India</p>
                                 <p>NGO002 - Care India</p>
                                 <p>NGO003 - Oxfam India</p>
                                 <p>NGO004 - Save the Children</p>
                                 <p>NGO005 - Goonj</p>
-                                <p className="text-blue-300 mt-2">Password: <span className="font-mono">demo123</span></p>
+                                <p className="text-emerald-300 mt-2">Password: <span className="font-mono">demo123</span></p>
                             </div>
                         </div>
                     </div>

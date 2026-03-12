@@ -1,6 +1,4 @@
-// Indian Cities Database with Coordinates
 export const indianCities = [
-    // Major Metropolitan Cities
     { name: "Mumbai", state: "Maharashtra", lat: 19.0760, lng: 72.8777 },
     { name: "Delhi", state: "Delhi", lat: 28.7041, lng: 77.1025 },
     { name: "Bangalore", state: "Karnataka", lat: 12.9716, lng: 77.5946 },
@@ -10,7 +8,6 @@ export const indianCities = [
     { name: "Ahmedabad", state: "Gujarat", lat: 23.0225, lng: 72.5714 },
     { name: "Pune", state: "Maharashtra", lat: 18.5204, lng: 73.8567 },
 
-    // State Capitals & Major Cities
     { name: "Jaipur", state: "Rajasthan", lat: 26.9124, lng: 75.7873 },
     { name: "Lucknow", state: "Uttar Pradesh", lat: 26.8467, lng: 80.9462 },
     { name: "Bhopal", state: "Madhya Pradesh", lat: 23.2599, lng: 77.4126 },
@@ -32,7 +29,6 @@ export const indianCities = [
     { name: "Itanagar", state: "Arunachal Pradesh", lat: 27.0844, lng: 93.6053 },
     { name: "Panaji", state: "Goa", lat: 15.4909, lng: 73.8278 },
 
-    // Tier-2 Cities
     { name: "Surat", state: "Gujarat", lat: 21.1702, lng: 72.8311 },
     { name: "Vadodara", state: "Gujarat", lat: 22.3072, lng: 73.1812 },
     { name: "Rajkot", state: "Gujarat", lat: 22.3039, lng: 70.8022 },
@@ -66,7 +62,6 @@ export const indianCities = [
     { name: "Udaipur", state: "Rajasthan", lat: 24.5854, lng: 73.7125 },
     { name: "Kota", state: "Rajasthan", lat: 25.2138, lng: 75.8648 },
 
-    // Coastal & Disaster-Prone Areas
     { name: "Puri", state: "Odisha", lat: 19.8135, lng: 85.8312 },
     { name: "Cuttack", state: "Odisha", lat: 20.4625, lng: 85.8828 },
     { name: "Paradip", state: "Odisha", lat: 20.3150, lng: 86.6086 },
@@ -78,7 +73,6 @@ export const indianCities = [
     { name: "Srinagar", state: "Jammu and Kashmir", lat: 34.0837, lng: 74.7973 },
     { name: "Leh", state: "Ladakh", lat: 34.1526, lng: 77.5771 },
 
-    // Other Important Cities
     { name: "Gurgaon", state: "Haryana", lat: 28.4595, lng: 77.0266 },
     { name: "Faridabad", state: "Haryana", lat: 28.4089, lng: 77.3178 },
     { name: "Noida", state: "Uttar Pradesh", lat: 28.5355, lng: 77.3910 },

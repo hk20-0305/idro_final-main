@@ -4,10 +4,12 @@ export default function DonationModal({ open, onClose }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-[#1e293b] border border-white/10 rounded-xl p-6 w-full max-w-md relative shadow-2xl">
+    <div className="fixed inset-0 z-[999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-black border border-emerald-500/20 rounded-2xl p-8 w-full max-w-md relative shadow-[0_0_50px_rgba(16,185,129,0.1)] overflow-hidden">
 
-        {/* Close */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-50"></div>
+
+
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-slate-400 hover:text-white"
@@ -15,20 +17,20 @@ export default function DonationModal({ open, onClose }) {
           <X />
         </button>
 
-        <h2 className="text-xl font-bold text-yellow-400 mb-2 text-center">
-          Support Disaster Relief
+        <h2 className="text-2xl font-black text-white mb-2 text-center uppercase tracking-tighter">
+          Support <span className="text-emerald-400">Relief</span>
         </h2>
 
-        <p className="text-sm text-slate-400 text-center mb-4">
-          Scan this QR code using GPay / PhonePe / Paytm
+        <p className="text-[10px] text-slate-500 text-center mb-8 uppercase tracking-[0.2em] font-bold">
+          Scan with UPI (GPay / PhonePe / Paytm)
         </p>
 
-        {/* QR Code Image */}
+
         <div className="flex justify-center">
           <img
             src="/donation-qr.png"
             alt="Donation QR"
-            className="w-64 h-64 rounded-lg border border-white/10"
+            className="w-64 h-64 rounded-xl border-2 border-emerald-500/10 shadow-lg"
           />
         </div>
 
